@@ -1,0 +1,84 @@
+{
+	"name": "n8n-nodes-evmquery",
+	"version": "0.1.0",
+	"description": "n8n community node for evmquery — query EVM smart contracts (Ethereum, Base, BNB) via CEL expressions.",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"evmquery",
+		"evm",
+		"ethereum",
+		"base",
+		"bnb",
+		"blockchain",
+		"smart-contracts",
+		"cel"
+	],
+	"homepage": "https://github.com/abinnovision/evmquery-clients/tree/main/packages/n8n-nodes-evmquery#readme",
+	"repository": {
+		"url": "https://github.com/abinnovision/evmquery-clients",
+		"directory": "packages/n8n-nodes-evmquery"
+	},
+	"license": "Apache-2.0",
+	"author": {
+		"name": "abi group GmbH",
+		"email": "info@abigroup.io",
+		"url": "https://abigroup.io/"
+	},
+	"type": "commonjs",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"LICENSE.md"
+	],
+	"scripts": {
+		"build": "tsc -p tsconfig.build.json && gulp build:assets",
+		"dev": "tsc --watch -p tsconfig.build.json",
+		"format:check": "prettier --check '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
+		"format:fix": "prettier --write '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
+		"lint:check": "eslint '{src/**/*,*}.{t,j}s{,x}' --max-warnings 0",
+		"lint:fix": "eslint '{src/**/*,*}.{t,j}s{,x}' --fix",
+		"test-unit": "vitest run",
+		"test-unit:watch": "vitest watch",
+		"typecheck": "tsc --noEmit"
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/EvmQueryApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/EvmQuery/EvmQuery.node.js"
+		]
+	},
+	"lint-staged": {
+		"{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}": [
+			"prettier --write"
+		],
+		"{src/**/*,*}.{t,j}s{,x}": [
+			"eslint --fix"
+		]
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	},
+	"devDependencies": {
+		"@abinnovision/eslint-config-base": "^3.2.2",
+		"@abinnovision/prettier-config": "^2.1.5",
+		"@evmquery-clients-internal/tsconfig": "workspace:^",
+		"@types/gulp": "^4.0.17",
+		"eslint": "^9.39.4",
+		"eslint-plugin-n8n-nodes-base": "^1.16.3",
+		"gulp": "^5.0.0",
+		"n8n-workflow": "^1.0.0",
+		"prettier": "^3.8.1",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"npm": true,
+		"npmAccess": "public"
+	}
+}

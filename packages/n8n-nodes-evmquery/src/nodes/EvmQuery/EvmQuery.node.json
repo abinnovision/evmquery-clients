@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-base.evmQuery",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data & Storage", "AI"],
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/abinnovision/evmquery-clients/tree/main/packages/n8n-nodes-evmquery#readme"
+			}
+		],
+		"credentialDocumentation": [
+			{
+				"url": "https://evmquery.com"
+			}
+		]
+	}
+}
