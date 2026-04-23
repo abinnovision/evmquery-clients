@@ -20,7 +20,6 @@ const fakeNode: INode = {
  * transport actually reads are populated.
  */
 function buildCtx(overrides?: {
-	baseUrl?: string;
 	response?: unknown;
 	throws?: Error;
 }): IExecuteFunctions & {
@@ -38,7 +37,6 @@ function buildCtx(overrides?: {
 		getCredentials: vi.fn(() =>
 			Promise.resolve({
 				apiKey: "k_test",
-				baseUrl: overrides?.baseUrl ?? "https://api.evmquery.com/api",
 			}),
 		),
 		helpers: {
@@ -55,7 +53,7 @@ describe("evmQueryRequest", () => {
 		vi.clearAllMocks();
 	});
 
-	it("composes baseUrl + path and forwards method/body", async () => {
+	it("composes base URL + path and forwards method/body", async () => {
 		const ctx = buildCtx({ response: { ok: true } });
 		const out = await evmQueryRequest(ctx, {
 			method: "POST",
@@ -68,7 +66,7 @@ describe("evmQueryRequest", () => {
 		expect(auth).toBe("evmQueryApi");
 		expect(req).toMatchObject({
 			method: "POST",
-			url: "https://api.evmquery.com/api/query",
+			url: "https://api.evmquery.com/api/v1/query",
 			body: { query: "sol_address(0x0)", vars: [] },
 			json: true,
 		});
@@ -83,13 +81,6 @@ describe("evmQueryRequest", () => {
 		});
 		const [, req] = ctx.__httpMock.mock.calls[0]!;
 		expect(req.qs).toEqual({ limit: 50 });
-	});
-
-	it("honors a custom baseUrl from credentials", async () => {
-		const ctx = buildCtx({ baseUrl: "https://staging.evmquery.com/api" });
-		await evmQueryRequest(ctx, { method: "GET", path: "/usage" });
-		const [, req] = ctx.__httpMock.mock.calls[0]!;
-		expect(req.url).toBe("https://staging.evmquery.com/api/usage");
 	});
 
 	it("wraps HTTP errors in a NodeApiError", async () => {

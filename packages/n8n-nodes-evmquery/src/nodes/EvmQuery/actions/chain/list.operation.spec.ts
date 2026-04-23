@@ -31,7 +31,6 @@ function buildCtx(overrides?: {
 		getCredentials: vi.fn(() =>
 			Promise.resolve({
 				apiKey: "k_test",
-				baseUrl: "https://api.evmquery.com/api",
 			}),
 		),
 		helpers: {
@@ -65,7 +64,7 @@ describe("chain.list operation", () => {
 		expect(auth).toBe("evmQueryApi");
 		expect(req).toMatchObject({
 			method: "GET",
-			url: "https://api.evmquery.com/api/chains",
+			url: "https://api.evmquery.com/api/v1/chains",
 		});
 	});
 

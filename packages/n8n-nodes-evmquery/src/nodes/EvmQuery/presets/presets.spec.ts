@@ -87,8 +87,13 @@ describe("preset cookbook", () => {
 		expect(Array.isArray(presets)).toBe(true);
 	});
 
-	it("ships empty in v1 (cookbook lives in the README)", () => {
-		expect(presets).toEqual([]);
+	it("ships at least one preset", () => {
+		expect(presets.length).toBeGreaterThan(0);
+	});
+
+	it("uses unique ids across the catalog", () => {
+		const ids = presets.map((p) => p.id);
+		expect(new Set(ids).size).toBe(ids.length);
 	});
 
 	it("validates every exported preset against the EvmQueryPreset shape", () => {

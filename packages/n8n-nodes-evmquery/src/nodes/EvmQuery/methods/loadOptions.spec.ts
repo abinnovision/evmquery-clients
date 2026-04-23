@@ -29,7 +29,6 @@ function buildCtx(overrides?: {
 		getCredentials: vi.fn(() =>
 			Promise.resolve({
 				apiKey: "k_test",
-				baseUrl: "https://api.evmquery.com/api",
 			}),
 		),
 		helpers: {

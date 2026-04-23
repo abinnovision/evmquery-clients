@@ -35,7 +35,7 @@ export class EvmQueryApi implements ICredentialType {
 
 	public test: ICredentialTestRequest = {
 		request: {
-			baseURL: "={{$credentials.baseUrl}}",
+			baseURL: "https://api.evmquery.com/api/v1",
 			url: "/usage",
 			method: "GET",
 		},

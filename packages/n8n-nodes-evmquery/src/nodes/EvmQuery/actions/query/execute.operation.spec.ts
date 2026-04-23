@@ -21,6 +21,8 @@ interface CtxParams {
 	context?: unknown;
 	options?: unknown;
 	response?: unknown;
+	preset?: string;
+	presetInputs?: Record<string, unknown>;
 }
 
 function buildCtx(
@@ -46,6 +48,22 @@ function buildCtx(
 				return params.context ?? fallback ?? {};
 			}
 
+			if (name === "preset") {
+				return params.preset ?? fallback ?? "custom";
+			}
+
+			if (name.startsWith("preset_")) {
+				/*
+				 * The executor reads preset inputs via
+				 * `preset_<safeId>_<inputName>`. For test ergonomics we key
+				 * `presetInputs` on just the inputName — the suffix after the
+				 * last underscore — so fixtures stay readable.
+				 */
+				const inputName = name.slice(name.lastIndexOf("_") + 1);
+
+				return params.presetInputs?.[inputName] ?? fallback ?? "";
+			}
+
 			if (name === "options") {
 				/*
 				 * outputFormat now lives inside the `options` collection so it
@@ -67,7 +85,6 @@ function buildCtx(
 		getCredentials: vi.fn(() =>
 			Promise.resolve({
 				apiKey: "k_test",
-				baseUrl: "https://api.evmquery.com/api",
 			}),
 		),
 		helpers: {
@@ -114,7 +131,7 @@ describe("query.execute operation", () => {
 		expect(auth).toBe("evmQueryApi");
 		expect(req).toMatchObject({
 			method: "POST",
-			url: "https://api.evmquery.com/api/query",
+			url: "https://api.evmquery.com/api/v1/query",
 			body: {
 				chain: "evm_ethereum",
 				expression: "Token.balanceOf(holder)",
@@ -228,6 +245,57 @@ describe("query.execute operation", () => {
 		const out = await executeQueryExecute.call(ctx, 0);
 
 		expect(out).toEqual(envelopeWithObjectValue);
+	});
+
+	it("expands the erc20-balance preset into the custom request shape", async () => {
+		const ctx = buildCtx({
+			chainId: "evm_ethereum",
+			expression: "unused-when-preset-active",
+			preset: "erc20-balance",
+			presetInputs: {
+				tokenAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+				holder: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1",
+			},
+			response: envelopeWithScalarValue,
+		});
+
+		await executeQueryExecute.call(ctx, 0);
+
+		const [, req] = ctx.__httpMock.mock.calls[0]!;
+		expect(req.body).toMatchObject({
+			chain: "evm_ethereum",
+			expression: "Token.balanceOf(holder)",
+			schema: {
+				contracts: {
+					Token: { address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
+				},
+				context: { holder: "sol_address" },
+			},
+			context: { holder: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1" },
+		});
+	});
+
+	it("expands the native-balance preset without contracts", async () => {
+		const ctx = buildCtx({
+			chainId: "evm_base",
+			expression: "unused",
+			preset: "native-balance",
+			presetInputs: { account: "0xabc" },
+			response: envelopeWithScalarValue,
+		});
+
+		await executeQueryExecute.call(ctx, 0);
+
+		const [, req] = ctx.__httpMock.mock.calls[0]!;
+		expect(req.body).toMatchObject({
+			chain: "evm_base",
+			expression: "chain.balance(account)",
+			schema: {
+				contracts: {},
+				context: { account: "sol_address" },
+			},
+			context: { account: "0xabc" },
+		});
 	});
 
 	it("coerces string booleans in context values via parseContextValues", async () => {

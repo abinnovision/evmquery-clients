@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { parseContextTypes, parseContracts } from "./shared";
+import {
+	parseContextTypes,
+	parseContextValues,
+	parseContracts,
+} from "./shared";
 
 describe("parseContracts", () => {
 	it("normalizes the UI fixedCollection shape", () => {
@@ -102,5 +106,99 @@ describe("parseContextTypes", () => {
 		expect(parseContextTypes(undefined)).toEqual({});
 		expect(parseContextTypes({})).toEqual({});
 		expect(parseContextTypes("")).toEqual({});
+	});
+});
+
+describe("parseContextValues (list<*> coercion)", () => {
+	/*
+	 * These tests pin down the two user paths documented on the Value field:
+	 * typing a JSON literal (Fixed mode) and piping an array in from
+	 * upstream (Expression mode / $fromAI). If a future refactor loses
+	 * either path, the test signal lands before the UX regression ships.
+	 */
+
+	it("parses a JSON-string list into an actual array (Fixed-mode UI path)", () => {
+		const types = { holders: "list<sol_address>" as const };
+		const values = parseContextValues(
+			{
+				entries: [
+					{
+						name: "holders",
+						type: "list<sol_address>",
+						value: '["0xabc","0xdef"]',
+					},
+				],
+			},
+			types,
+		);
+		expect(values).toEqual({ holders: ["0xabc", "0xdef"] });
+	});
+
+	it("passes an actual array through untouched (Expression-mode / $fromAI path)", () => {
+		const types = { tokenIds: "list<sol_int>" as const };
+		const values = parseContextValues(
+			{
+				entries: [
+					{ name: "tokenIds", type: "list<sol_int>", value: [1, 2, 3] },
+				],
+			},
+			types,
+		);
+		expect(values).toEqual({ tokenIds: [1, 2, 3] });
+	});
+
+	it("falls back to the raw string for malformed JSON (server-side validator handles it)", () => {
+		const types = { holders: "list<sol_address>" as const };
+		const values = parseContextValues(
+			{
+				entries: [
+					{
+						name: "holders",
+						type: "list<sol_address>",
+						value: "0xabc,0xdef",
+					},
+				],
+			},
+			types,
+		);
+		expect(values).toEqual({ holders: "0xabc,0xdef" });
+	});
+
+	it("accepts an AI JSON object { name: [...] } for list types", () => {
+		const types = { addrs: "list<sol_address>" as const };
+		const values = parseContextValues({ addrs: ["0x1", "0x2"] }, types);
+		expect(values).toEqual({ addrs: ["0x1", "0x2"] });
+	});
+
+	it("omits list entries whose value is an empty string", () => {
+		const types = { holders: "list<sol_address>" as const };
+		const values = parseContextValues(
+			{
+				entries: [{ name: "holders", type: "list<sol_address>", value: "" }],
+			},
+			types,
+		);
+		expect(values).toEqual({});
+	});
+
+	it("leaves scalar coercion unchanged when list entries coexist", () => {
+		const types = {
+			holders: "list<sol_address>" as const,
+			flag: "bool" as const,
+		};
+		const values = parseContextValues(
+			{
+				entries: [
+					{
+						name: "holders",
+						type: "list<sol_address>",
+						value: '["0x1","0x2"]',
+					},
+					{ name: "flag", type: "bool", value: "true" },
+				],
+			},
+			types,
+		);
+		expect(values).toEqual({ holders: ["0x1", "0x2"], flag: true });
 	});
 });

@@ -37,14 +37,14 @@ const showForEvaluated = {
  * loadOptions method with a static fallback so the UI never renders empty.
  */
 const chainField: INodeProperties = {
-	displayName: "Chain Name or ID",
+	displayName: "Chain",
 	name: "chainId",
 	type: "options",
 	typeOptions: { loadOptionsMethod: "listChains" },
 	default: "evm_ethereum",
 	required: true,
 	description:
-		'EVM chain to query. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		'EVM chain to query. Pick from the list, or pass an evmquery chain id (e.g. <code>evm_ethereum</code>, <code>evm_base</code>, <code>evm_bnb_mainnet</code>) via an <a href="https://docs.n8n.io/code/expressions/">expression</a>. The numeric EVM chain IDs shown in parentheses (1, 8453, 56) are reference only — pass the <code>evm_*</code> id.',
 	displayOptions: showForQuery,
 };
 
@@ -129,12 +129,43 @@ const contextField: INodeProperties = {
 					required: true,
 				},
 				{
+					/*
+					 * A single string field handles every sol type including the
+					 * `list<*>` family. Two runtime paths are supported — see the
+					 * block comment above `coerceValue` for the exact coercion
+					 * rules that back up the UX described here.
+					 *
+					 *   • Scalar types (sol_int / sol_address / bool / string /
+					 *     bytes): type the value directly.
+					 *   • list<*> — from upstream data: toggle the field to
+					 *     Expression mode and write `={{ $json.holders }}`. The
+					 *     array flows through as-is.
+					 *   • list<*> — typed by hand: paste a JSON array literal
+					 *     like `["0x1","0x2"]`. `rows: 2` gives the literal some
+					 *     breathing room without committing to a full textarea.
+					 */
 					displayName: "Value",
 					name: "value",
 					type: "string",
+					typeOptions: { rows: 2 },
 					default: "",
+					/*
+					 * n8n gives us three distinct inline-help slots, each
+					 * rendering in a different place:
+					 *   • `placeholder` — dim text inside the empty input.
+					 *     Format-shaped so the user sees the three common
+					 *     shapes at a glance.
+					 *   • `hint` — small text below the input, always visible.
+					 *     Reserved for the one non-obvious affordance the
+					 *     placeholder can't express (the Expression-mode
+					 *     escape hatch for arrays from upstream).
+					 *   • `description` — tooltip on the `?` icon next to the
+					 *     label. The prose-y version for anyone who hovers.
+					 */
+					placeholder: '0xabc…  ·  true/false  ·  ["0x1","0x2"]',
+					hint: "For lists from upstream data, toggle Expression mode and use e.g. <code>={{ $json.holders }}</code>.",
 					description:
-						'Runtime value. For `bool` use `true`/`false`; for `list<*>` pass a JSON array (for example, `["0x1","0x2"]`).',
+						'Runtime value. Scalars: type directly (for `bool` use `true`/`false`). Lists from upstream: toggle Expression mode and write e.g. <code>={{ $json.holders }}</code>. Lists by hand: paste a JSON array like <code>["0x1","0x2"]</code>.',
 					displayOptions: showForEvaluated,
 				},
 			],
@@ -342,6 +373,19 @@ function parseContextTypes(raw: unknown): Record<string, SolType> {
  * to avoid sending obvious type mismatches (booleans-as-strings, lists
  * encoded as JSON strings). Everything else — including address checksums
  * and big-int precision — is delegated to the server.
+ *
+ * For `list<*>` types the caller may arrive via one of three shapes:
+ *
+ *   1. An actual array — from an n8n expression that evaluated to an array
+ *      (Expression-mode toggle in the UI), or from `$fromAI` where the AI
+ *      agent returned a JSON array. Passed through unchanged.
+ *   2. A string containing a JSON array — the Fixed-mode UI path when a
+ *      user hand-types `["0x1","0x2"]`. Parsed here.
+ *   3. Anything else — returned verbatim so the server-side validator can
+ *      produce a clean, typed error instead of the node swallowing it.
+ *
+ * The Value field's UI description (see `contextField` above) documents
+ * paths 1 and 2 for users; keep them in sync.
  */
 function coerceValue(rawValue: unknown, type: SolType): unknown {
 	if (type === "bool") {

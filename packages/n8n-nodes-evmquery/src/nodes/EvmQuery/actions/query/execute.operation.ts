@@ -3,8 +3,10 @@ import {
 	parseContextValues,
 	parseContracts,
 } from "./shared";
+import { expandPreset, PRESET_CUSTOM, presetParamKey } from "../../presets";
 import { evmQueryRequest } from "../../transport/request";
 
+import type { SolType } from "./shared";
 import type {
 	GenericValue,
 	IDataObject,
@@ -72,18 +74,45 @@ async function executeQueryExecute(
 	itemIndex: number,
 ): Promise<IDataObject> {
 	const chain = this.getNodeParameter("chainId", itemIndex) as string;
-	const expression = this.getNodeParameter("expression", itemIndex) as string;
-	const contractsRaw = this.getNodeParameter("contracts", itemIndex, {});
-	const contextRaw = this.getNodeParameter("context", itemIndex, {});
+	const presetId = this.getNodeParameter(
+		"preset",
+		itemIndex,
+		PRESET_CUSTOM,
+	) as string;
 	const optionsRaw = this.getNodeParameter("options", itemIndex, {}) as {
 		timeoutMs?: number;
 		outputFormat?: "simple" | "raw";
 	};
 	const outputFormat = optionsRaw.outputFormat ?? "simple";
 
-	const contracts = parseContracts(contractsRaw);
-	const contextTypes = parseContextTypes(contextRaw);
-	const contextValues = parseContextValues(contextRaw, contextTypes);
+	let contracts: Record<string, { address: string }>;
+	let contextTypes: Record<string, SolType>;
+	let contextValues: Record<string, unknown>;
+	let expression: string;
+
+	if (presetId !== PRESET_CUSTOM) {
+		/*
+		 * Preset path: pull each preset input from its namespaced node param
+		 * (`preset_<safeId>_<inputName>`) and let the preset template decide
+		 * contracts, context shape, and expression. The rest of the
+		 * request-assembly path below stays identical to the custom path.
+		 */
+		const expanded = expandPreset(presetId, (inputName) =>
+			this.getNodeParameter(presetParamKey(presetId, inputName), itemIndex, ""),
+		);
+		contracts = expanded.contracts;
+		contextTypes = expanded.contextTypes;
+		contextValues = expanded.contextValues;
+		expression = expanded.expression;
+	} else {
+		expression = this.getNodeParameter("expression", itemIndex) as string;
+		const contractsRaw = this.getNodeParameter("contracts", itemIndex, {});
+		const contextRaw = this.getNodeParameter("context", itemIndex, {});
+
+		contracts = parseContracts(contractsRaw);
+		contextTypes = parseContextTypes(contextRaw);
+		contextValues = parseContextValues(contextRaw, contextTypes);
+	}
 
 	const schema: IDataObject = { contracts };
 	if (Object.keys(contextTypes).length > 0) {

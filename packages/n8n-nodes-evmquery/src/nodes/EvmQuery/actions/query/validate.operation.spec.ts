@@ -45,7 +45,6 @@ function buildCtx(params: {
 		getCredentials: vi.fn(() =>
 			Promise.resolve({
 				apiKey: "k_test",
-				baseUrl: "https://api.evmquery.com/api",
 			}),
 		),
 		helpers: {
@@ -75,7 +74,7 @@ describe("query.validate operation", () => {
 		expect(auth).toBe("evmQueryApi");
 		expect(req).toMatchObject({
 			method: "POST",
-			url: "https://api.evmquery.com/api/query/validate",
+			url: "https://api.evmquery.com/api/v1/query/validate",
 			body: {
 				chain: "evm_ethereum",
 				expression: "Token.balanceOf(holder)",

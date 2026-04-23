@@ -10,6 +10,7 @@ import {
 	validateFields,
 } from "./actions/query";
 import { getUsageFields } from "./actions/usage";
+import { presetField, presetInputFields, withHideOnPreset } from "./presets";
 
 import type { INodeProperties, INodeTypeDescription } from "n8n-workflow";
 
@@ -88,10 +89,12 @@ export const description: INodeTypeDescription = {
 	usableAsTool: true,
 	properties: [
 		operationField,
+		presetField,
 		chainField,
-		contractsField,
-		expressionField,
-		contextField,
+		withHideOnPreset(expressionField),
+		withHideOnPreset(contractsField),
+		withHideOnPreset(contextField),
+		...presetInputFields,
 		optionsField,
 		...describeFields,
 		...executeFields,
