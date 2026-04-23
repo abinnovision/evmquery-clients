@@ -40,8 +40,7 @@
 		"lint:check": "eslint '{src/**/*,*}.{t,j}s{,x}' --max-warnings 0",
 		"lint:fix": "eslint '{src/**/*,*}.{t,j}s{,x}' --fix",
 		"test-unit": "vitest run",
-		"test-unit:watch": "vitest watch",
-		"typecheck": "tsc --noEmit"
+		"test-unit:watch": "vitest watch"
 	},
 	"n8n": {
 		"n8nNodesApiVersion": 1,

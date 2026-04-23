@@ -32,23 +32,23 @@ const operationField: INodeProperties = {
 		{
 			name: "Execute Query",
 			value: "execute",
-			action: "Execute a CEL query",
+			action: "Execute a query",
 			description:
-				"Read EVM smart-contract state via a CEL expression (token balances, metadata, ownership, arbitrary view-function calls). Returns the typed result in one call.",
+				"Read EVM smart-contract state — token balances, metadata, ownership, arbitrary view-function calls. Returns the typed result in one call.",
 		},
 		{
 			name: "Validate Query",
 			value: "validate",
-			action: "Validate a CEL query",
+			action: "Validate a query",
 			description:
-				"Type-check a CEL expression and estimate credit cost without executing. Use when you want to confirm an expression is well-formed before running.",
+				"Type-check an expression and estimate credit cost without executing. Use when you want to confirm an expression is well-formed before running.",
 		},
 		{
 			name: "Describe Schema",
 			value: "describe",
 			action: "Describe contract schema",
 			description:
-				"Inspect a chain's contracts and return the methods, argument types, and context variables available to CEL. Use before Execute when unsure which methods a contract exposes.",
+				"Inspect a chain's contracts and return the methods, argument types, and context variables available to expressions. Use before Execute when unsure which methods a contract exposes.",
 		},
 		{
 			name: "List Chains",
@@ -80,7 +80,7 @@ export const description: INodeTypeDescription = {
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',
 	description:
-		"Query EVM smart contracts (Ethereum, Base, BNB) via CEL expressions — balances, metadata, ownership, arbitrary reads.",
+		"Query EVM smart contracts (Ethereum, Base, BNB) — balances, metadata, ownership, arbitrary reads.",
 	defaults: { name: "evmquery" },
 	inputs: ["main"] as never,
 	outputs: ["main"] as never,

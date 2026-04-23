@@ -26,7 +26,7 @@ interface EvmQueryRequestOptions {
 	qs?: IDataObject;
 }
 
-const DEFAULT_BASE_URL = "https://api.evmquery.com/api";
+const DEFAULT_BASE_URL = "https://api.evmquery.com/api/v1";
 
 /**
  * Thin wrapper around `httpRequestWithAuthentication` that injects the

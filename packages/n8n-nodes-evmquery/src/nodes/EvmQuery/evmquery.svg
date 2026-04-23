@@ -1,9 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
-  <title>evmquery</title>
-  <!-- Placeholder mark — replace with brand icon before first publish. -->
-  <rect width="60" height="60" rx="12" fill="#0b0d14"/>
-  <path d="M30 10 L46 30 L30 50 L14 30 Z" fill="#5b9dff"/>
-  <path d="M30 18 L40 30 L30 42 L20 30 Z" fill="#0b0d14"/>
-  <circle cx="30" cy="30" r="4" fill="#5b9dff"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64">
+	<defs>
+		<path id="a" d="M32 0c17.673 0 32 14.327 32 32S49.673 64 32 64 0 49.673 0 32 14.327 0 32 0"/>
+	</defs>
+	<g fill="none" fill-rule="evenodd">
+		<use xlink:href="#a" fill="#fff"/>
+		<g transform="translate(16 13)">
+			<rect width="20.462" height="20.462" y="17.538" fill="#d8c4fa" rx="4"/>
+			<rect width="20.462" height="20.462" x="5.846" y="8.769" fill="#b089f4" rx="4"/>
+			<rect width="20.462" height="20.462" x="11.692" fill="#7c3aed" rx="4"/>
+		</g>
+	</g>
 </svg>

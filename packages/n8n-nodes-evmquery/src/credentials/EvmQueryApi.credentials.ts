@@ -20,15 +20,7 @@ export class EvmQueryApi implements ICredentialType {
 			typeOptions: { password: true },
 			default: "",
 			required: true,
-			description: "Your evmquery API key. Issued from the evmquery dashboard.",
-		},
-		{
-			displayName: "Base URL",
-			name: "baseUrl",
-			type: "string",
-			default: "https://api.evmquery.com/api",
-			description:
-				"Base URL of the evmquery API. Override for staging or self-hosted deployments.",
+			description: "Your evmquery API key. Issued from app.evmquery.com.",
 		},
 	];
 
