@@ -289,7 +289,7 @@ describe("query.execute operation", () => {
 		const [, req] = ctx.__httpMock.mock.calls[0]!;
 		expect(req.body).toMatchObject({
 			chain: "evm_base",
-			expression: "chain.balance(account)",
+			expression: "account.balance()",
 			schema: {
 				contracts: {},
 				context: { account: "sol_address" },
