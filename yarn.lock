@@ -4264,6 +4264,7 @@ __metadata:
     prettier: "npm:^3.8.1"
     typescript: "npm:^6.0.3"
     vitest: "npm:^4.1.0"
+    zod: "npm:3.25.67"
   peerDependencies:
     n8n-workflow: "*"
   languageName: unknown
@@ -6333,5 +6334,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10/f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod@npm:3.25.67":
+  version: 3.25.67
+  resolution: "zod@npm:3.25.67"
+  checksum: 10/0e35432dcca7f053e63f5dd491a87c78abe0d981817547252c3b6d05f0f58788695d1a69724759c6501dff3fd62929be24c9f314a3625179bee889150f7a61fa
   languageName: node
   linkType: hard

@@ -16,7 +16,7 @@ const SOL_TYPES = [
 type SolType = (typeof SOL_TYPES)[number];
 
 /**
- * Query-shaped display options — chain / contracts / context fields are
+ * Query-shaped display options: chain / contracts / context fields are
  * meaningful for the three query operations (execute, validate, describe)
  * but not for list-chains or get-usage.
  */
@@ -44,7 +44,7 @@ const chainField: INodeProperties = {
 	default: "evm_ethereum",
 	required: true,
 	description:
-		'EVM chain to query. Pick from the list, or pass an evmquery chain id (e.g. <code>evm_ethereum</code>, <code>evm_base</code>, <code>evm_bnb_mainnet</code>) via an <a href="https://docs.n8n.io/code/expressions/">expression</a>. The numeric EVM chain IDs shown in parentheses (1, 8453, 56) are reference only — pass the <code>evm_*</code> id.',
+		'EVM chain to query. Pick from the list, or pass an evmquery chain id (e.g. <code>evm_ethereum</code>, <code>evm_base</code>, <code>evm_bnb_mainnet</code>) via an <a href="https://docs.n8n.io/code/expressions/">expression</a>. The numeric EVM chain IDs shown in parentheses (1, 8453, 56) are reference only; pass the <code>evm_*</code> id.',
 	displayOptions: showForQuery,
 };
 
@@ -74,8 +74,9 @@ const contractsField: INodeProperties = {
 					type: "string",
 					default: "",
 					required: true,
+					validateType: "string-alphanumeric",
 					description:
-						"Identifier referenced in the CEL expression (for example, `Token`)",
+						"Identifier referenced in the CEL expression (for example, `Token`). Must be a valid CEL identifier: letters, digits, and underscores only; cannot start with a digit.",
 				},
 				{
 					displayName: "Address",
@@ -84,7 +85,7 @@ const contractsField: INodeProperties = {
 					default: "",
 					required: true,
 					placeholder: "0x…",
-					description: "EIP-55 checksummed contract address",
+					description: "Contract address (0x-prefixed, 20 bytes)",
 				},
 			],
 		},
@@ -119,6 +120,9 @@ const contextField: INodeProperties = {
 					type: "string",
 					default: "",
 					required: true,
+					validateType: "string-alphanumeric",
+					description:
+						"Variable name referenced via `vars.<name>` in the expression. Must be a valid CEL identifier: letters, digits, and underscores only; cannot start with a digit.",
 				},
 				{
 					displayName: "Type",
@@ -131,16 +135,16 @@ const contextField: INodeProperties = {
 				{
 					/*
 					 * A single string field handles every sol type including the
-					 * `list<*>` family. Two runtime paths are supported — see the
+					 * `list<*>` family. Two runtime paths are supported; see the
 					 * block comment above `coerceValue` for the exact coercion
 					 * rules that back up the UX described here.
 					 *
 					 *   • Scalar types (sol_int / sol_address / bool / string /
 					 *     bytes): type the value directly.
-					 *   • list<*> — from upstream data: toggle the field to
-					 *     Expression mode and write `={{ $json.holders }}`. The
+					 *   • list<*>, from input data: toggle the field to
+					 *     Expression mode and write `{{ $json.holders }}`. The
 					 *     array flows through as-is.
-					 *   • list<*> — typed by hand: paste a JSON array literal
+					 *   • list<*>, typed by hand: paste a JSON array literal
 					 *     like `["0x1","0x2"]`. `rows: 2` gives the literal some
 					 *     breathing room without committing to a full textarea.
 					 */
@@ -152,20 +156,20 @@ const contextField: INodeProperties = {
 					/*
 					 * n8n gives us three distinct inline-help slots, each
 					 * rendering in a different place:
-					 *   • `placeholder` — dim text inside the empty input.
+					 *   • `placeholder`: dim text inside the empty input.
 					 *     Format-shaped so the user sees the three common
 					 *     shapes at a glance.
-					 *   • `hint` — small text below the input, always visible.
+					 *   • `hint`: small text below the input, always visible.
 					 *     Reserved for the one non-obvious affordance the
 					 *     placeholder can't express (the Expression-mode
-					 *     escape hatch for arrays from upstream).
-					 *   • `description` — tooltip on the `?` icon next to the
+					 *     escape hatch for arrays from input).
+					 *   • `description`: tooltip on the `?` icon next to the
 					 *     label. The prose-y version for anyone who hovers.
 					 */
 					placeholder: '0xabc…  ·  true/false  ·  ["0x1","0x2"]',
-					hint: "For lists from upstream data, toggle Expression mode and use e.g. <code>={{ $json.holders }}</code>.",
+					hint: "For lists from input data, toggle Expression mode and use e.g. <code>{{ $json.holders }}</code>.",
 					description:
-						'Runtime value. Scalars: type directly (for `bool` use `true`/`false`). Lists from upstream: toggle Expression mode and write e.g. <code>={{ $json.holders }}</code>. Lists by hand: paste a JSON array like <code>["0x1","0x2"]</code>.',
+						'Runtime value. Scalars: type directly (for `bool` use `true`/`false`). Lists from input: toggle Expression mode and write e.g. <code>{{ $json.holders }}</code>. Lists by hand: paste a JSON array like <code>["0x1","0x2"]</code>.',
 					displayOptions: showForEvaluated,
 				},
 			],
@@ -174,7 +178,7 @@ const contextField: INodeProperties = {
 };
 
 /**
- * Shared field: CEL expression. Only visible for execute / validate — describe
+ * Shared field: CEL expression. Only visible for execute / validate; describe
  * infers the schema without evaluating anything. The `rows: 4` hint is a
  * deliberate nudge: expressions are routinely multi-line (e.g. conditional
  * returns) and a single-line input encourages the user to paste minified CEL.
@@ -198,7 +202,7 @@ const expressionField: INodeProperties = {
  * Shared field: Advanced options. Kept as an n8n `collection` so any future
  * knobs (block tag, retries) can be added without disrupting the main UI.
  * `outputFormat` lives here (not as a top-level field) so the default path
- * — Simple — is invisible to users who don't care, while power users can
+ * (Simple) is invisible to users who don't care, while power users can
  * still opt into the Raw envelope via "Add option".
  */
 const optionsField: INodeProperties = {
@@ -371,17 +375,17 @@ function parseContextTypes(raw: unknown): Record<string, SolType> {
  * Coerces a raw UI value into the JSON shape the API expects for the given
  * sol type. The coercion is conservative: we only do the minimum necessary
  * to avoid sending obvious type mismatches (booleans-as-strings, lists
- * encoded as JSON strings). Everything else — including address checksums
- * and big-int precision — is delegated to the server.
+ * encoded as JSON strings). Everything else, including address checksums
+ * and big-int precision, is delegated to the server.
  *
  * For `list<*>` types the caller may arrive via one of three shapes:
  *
- *   1. An actual array — from an n8n expression that evaluated to an array
+ *   1. An actual array, from an n8n expression that evaluated to an array
  *      (Expression-mode toggle in the UI), or from `$fromAI` where the AI
  *      agent returned a JSON array. Passed through unchanged.
- *   2. A string containing a JSON array — the Fixed-mode UI path when a
+ *   2. A string containing a JSON array, the Fixed-mode UI path when a
  *      user hand-types `["0x1","0x2"]`. Parsed here.
- *   3. Anything else — returned verbatim so the server-side validator can
+ *   3. Anything else, returned verbatim so the server-side validator can
  *      produce a clean, typed error instead of the node swallowing it.
  *
  * The Value field's UI description (see `contextField` above) documents
@@ -431,7 +435,7 @@ function coerceValue(rawValue: unknown, type: SolType): unknown {
 /**
  * Extracts the runtime values half of the Context Variables collection.
  * Requires the parsed types map so it can apply per-type coercion (bool,
- * list<*>). Only emits entries whose type is known — stray values without a
+ * list<*>). Only emits entries whose type is known; stray values without a
  * declared type would be dropped by the API anyway.
  */
 function parseContextValues(

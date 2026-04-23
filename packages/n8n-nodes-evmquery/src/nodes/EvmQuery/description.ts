@@ -35,7 +35,7 @@ const operationField: INodeProperties = {
 			value: "execute",
 			action: "Execute a query",
 			description:
-				"Read EVM smart-contract state — token balances, metadata, ownership, arbitrary view-function calls. Returns the typed result in one call.",
+				"Read EVM smart-contract state: token balances, metadata, ownership, arbitrary view-function calls. Returns the typed result in one call.",
 		},
 		{
 			name: "Validate Query",
@@ -81,7 +81,7 @@ export const description: INodeTypeDescription = {
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',
 	description:
-		"Query EVM smart contracts (Ethereum, Base, BNB) — balances, metadata, ownership, arbitrary reads.",
+		"Query EVM smart contracts (Ethereum, Base, BNB): balances, metadata, ownership, arbitrary reads.",
 	defaults: { name: "evmquery" },
 	inputs: ["main"] as never,
 	outputs: ["main"] as never,
