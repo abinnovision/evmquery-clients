@@ -48,7 +48,8 @@
 			"dist/credentials/EvmQueryApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/EvmQuery/EvmQuery.node.js"
+			"dist/nodes/EvmQuery/EvmQuery.node.js",
+			"dist/nodes/EvmQueryTrigger/EvmQueryTrigger.node.js"
 		]
 	},
 	"lint-staged": {

@@ -12,6 +12,7 @@ import type {
 	IDataObject,
 	IExecuteFunctions,
 	INodeProperties,
+	IPollFunctions,
 } from "n8n-workflow";
 
 /**
@@ -61,13 +62,68 @@ function toSimpleOutput(response: QueryExecuteResponse): IDataObject {
 }
 
 /**
- * Query.Execute → POST /query. Assembles the full evmquery request envelope:
+ * Parsed inputs to a `POST /query` call. Both the Execute action and the
+ * EvmQueryTrigger poll path read node parameters and then hand off to
+ * `runQueryExecute` with this shape — the action adds preset expansion and
+ * output shaping around it, the trigger adds value-diffing state.
+ */
+interface QueryExecuteParams {
+	chain: string;
+	expression: string;
+	contracts: Record<string, { address: string }>;
+	contextTypes: Record<string, SolType>;
+	contextValues: Record<string, unknown>;
+	timeoutMs?: number;
+}
+
+/**
+ * Pure request-assembly + transport for `POST /query`. Takes already-parsed
+ * params (no node parameter reads, no output shaping) so it can be called
+ * from any n8n context — `IExecuteFunctions` for the action node,
+ * `IPollFunctions` for the trigger node.
  *
+ * Request envelope:
  *   { chain, expression, schema: { contracts, context? },
  *     context?: <runtime values>, options?: { timeoutMs } }
- *
- * Output is post-processed per `outputFormat` so AI Agents can consume a
- * flat object while power users can still opt into the full envelope.
+ */
+async function runQueryExecute(
+	ctx: IExecuteFunctions | IPollFunctions,
+	params: QueryExecuteParams,
+): Promise<QueryExecuteResponse> {
+	const schema: IDataObject = { contracts: params.contracts };
+	if (Object.keys(params.contextTypes).length > 0) {
+		schema["context"] = params.contextTypes;
+	}
+
+	const body: IDataObject = {
+		chain: params.chain,
+		expression: params.expression,
+		schema,
+	};
+	if (Object.keys(params.contextValues).length > 0) {
+		body["context"] = params.contextValues;
+	}
+
+	if (
+		typeof params.timeoutMs === "number" &&
+		Number.isFinite(params.timeoutMs) &&
+		params.timeoutMs > 0
+	) {
+		body["options"] = { timeoutMs: params.timeoutMs };
+	}
+
+	return await evmQueryRequest<QueryExecuteResponse>(ctx, {
+		method: "POST",
+		path: "/query",
+		body,
+	});
+}
+
+/**
+ * Query.Execute → POST /query. Reads node parameters (including preset
+ * expansion), delegates the actual HTTP call to `runQueryExecute`, and
+ * post-processes per `outputFormat` so AI Agents can consume a flat object
+ * while power users can still opt into the full envelope.
  */
 async function executeQueryExecute(
 	this: IExecuteFunctions,
@@ -114,28 +170,13 @@ async function executeQueryExecute(
 		contextValues = parseContextValues(contextRaw, contextTypes);
 	}
 
-	const schema: IDataObject = { contracts };
-	if (Object.keys(contextTypes).length > 0) {
-		schema["context"] = contextTypes;
-	}
-
-	const body: IDataObject = { chain, expression, schema };
-	if (Object.keys(contextValues).length > 0) {
-		body["context"] = contextValues;
-	}
-
-	if (
-		typeof optionsRaw.timeoutMs === "number" &&
-		Number.isFinite(optionsRaw.timeoutMs) &&
-		optionsRaw.timeoutMs > 0
-	) {
-		body["options"] = { timeoutMs: optionsRaw.timeoutMs };
-	}
-
-	const response = await evmQueryRequest<QueryExecuteResponse>(this, {
-		method: "POST",
-		path: "/query",
-		body,
+	const response = await runQueryExecute(this, {
+		chain,
+		expression,
+		contracts,
+		contextTypes,
+		contextValues,
+		timeoutMs: optionsRaw.timeoutMs,
 	});
 
 	if (outputFormat === "raw") {
@@ -145,4 +186,5 @@ async function executeQueryExecute(
 	return toSimpleOutput(response);
 }
 
-export { executeFields, executeQueryExecute };
+export { executeFields, executeQueryExecute, runQueryExecute };
+export type { QueryExecuteParams, QueryExecuteResponse };

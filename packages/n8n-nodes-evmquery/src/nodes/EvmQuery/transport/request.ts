@@ -6,16 +6,18 @@ import type {
 	IHookFunctions,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
+	IPollFunctions,
 } from "n8n-workflow";
 
 /**
  * Any of the n8n execution contexts that expose `getCredentials`,
  * `getNode`, and `helpers.httpRequestWithAuthentication`. Used so a single
- * transport can be called from `execute`, `loadOptions`, and future hooks.
+ * transport can be called from `execute`, `loadOptions`, `poll`, and hooks.
  */
 type EvmQueryContext =
 	| IExecuteFunctions
 	| ILoadOptionsFunctions
+	| IPollFunctions
 	| IHookFunctions;
 
 interface EvmQueryRequestOptions {
