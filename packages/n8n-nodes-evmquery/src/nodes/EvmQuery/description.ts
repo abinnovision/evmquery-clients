@@ -77,16 +77,21 @@ export const description: INodeTypeDescription = {
 	displayName: "evmquery",
 	name: "evmQuery",
 	icon: "file:evmquery.svg",
-	group: ["transform"],
+	group: ["input"],
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',
 	description:
-		"Query EVM smart contracts (Ethereum, Base, BNB): balances, metadata, ownership, arbitrary reads.",
+		"Query EVM smart contracts on Ethereum, Base, BNB and more — balances, metadata, ownership, and arbitrary reads",
 	defaults: { name: "evmquery" },
 	inputs: ["main"] as never,
 	outputs: ["main"] as never,
 	credentials: [{ name: "evmQueryApi", required: true }],
-	usableAsTool: true,
+	usableAsTool: {
+		replacements: {
+			description:
+				"Read EVM smart-contract state for AI agents: token balances, metadata, ownership, and arbitrary view-function calls",
+		},
+	},
 	properties: [
 		operationField,
 		presetField,
