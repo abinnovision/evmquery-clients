@@ -2,7 +2,10 @@
 	"node": "n8n-nodes-evmquery.evmQuery",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
-	"categories": ["Data & Storage", "AI"],
+	"categories": ["Development", "Data & Storage"],
+	"subcategories": {
+		"Development": ["Blockchain"]
+	},
 	"alias": [
 		"evmquery",
 		"evm",
@@ -16,7 +19,9 @@
 		"token",
 		"erc20",
 		"erc721",
-		"nft"
+		"nft",
+		"contract",
+		"onchain"
 	],
 	"resources": {
 		"primaryDocumentation": [
