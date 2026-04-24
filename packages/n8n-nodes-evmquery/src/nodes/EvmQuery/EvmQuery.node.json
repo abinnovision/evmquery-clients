@@ -3,6 +3,21 @@
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Data & Storage", "AI"],
+	"alias": [
+		"evmquery",
+		"evm",
+		"ethereum",
+		"base",
+		"bnb",
+		"blockchain",
+		"smart contract",
+		"solidity",
+		"web3",
+		"token",
+		"erc20",
+		"erc721",
+		"nft"
+	],
 	"resources": {
 		"primaryDocumentation": [
 			{
