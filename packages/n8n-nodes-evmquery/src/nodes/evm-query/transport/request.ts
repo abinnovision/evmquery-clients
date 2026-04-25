@@ -1,4 +1,5 @@
 import { mapEvmQueryError } from "./errors";
+import { EVMQUERY_BASE_URL } from "../../../config";
 
 import type {
 	IDataObject,
@@ -27,12 +28,6 @@ interface EvmQueryRequestOptions {
 	body?: IDataObject;
 	qs?: IDataObject;
 }
-
-/**
- * Base URL for all evmquery API calls. There is only one deployment, so this
- * is a compile-time constant rather than a credential field.
- */
-export const EVMQUERY_BASE_URL = "https://api.evmquery.com/api/v1";
 
 /**
  * Thin wrapper around `httpRequestWithAuthentication` that injects the

@@ -1,3 +1,5 @@
+import { EVMQUERY_BASE_URL } from "../config";
+
 import type {
 	IAuthenticateGeneric,
 	Icon,
@@ -38,7 +40,7 @@ export class EvmQueryApi implements ICredentialType {
 
 	public test: ICredentialTestRequest = {
 		request: {
-			baseURL: "https://api.evmquery.com/api/v1",
+			baseURL: EVMQUERY_BASE_URL,
 			url: "/usage",
 			method: "GET",
 		},
