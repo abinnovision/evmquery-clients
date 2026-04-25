@@ -41,7 +41,7 @@ function extractInputName(template: string, context: string): string {
  * `paramKey` — so this module stays free of n8n runtime dependencies and
  * can be unit-tested in isolation.
  */
-function expandPreset(
+export function expandPreset(
 	presetId: string,
 	getInput: (inputName: string) => unknown,
 ): ExpandedPreset {
@@ -88,5 +88,4 @@ function expandPreset(
 	};
 }
 
-export { expandPreset };
 export type { ExpandedPreset };

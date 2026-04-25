@@ -11,9 +11,9 @@ import type {
  * keeps the action surface uniform with Usage.Get and the forthcoming Query.*
  * operations so `description.ts` can splice them in consistently.
  */
-const listChainsFields: INodeProperties[] = [];
+export const listChainsFields: INodeProperties[] = [];
 
-interface ChainsResponse {
+export interface ChainsResponse {
 	chains: Array<{ id: string; evmChainId: number; name: string }>;
 }
 
@@ -22,7 +22,7 @@ interface ChainsResponse {
  * `{ chains: [...] }` envelope because downstream workflow steps (IF, Set,
  * Loop) are easier to author when each chain is its own item.
  */
-async function executeListChains(
+export async function executeListChains(
 	this: IExecuteFunctions,
 	_itemIndex: number,
 ): Promise<IDataObject[]> {
@@ -33,6 +33,3 @@ async function executeListChains(
 
 	return response.chains.map((chain) => ({ ...chain }) satisfies IDataObject);
 }
-
-export { executeListChains, listChainsFields };
-export type { ChainsResponse };

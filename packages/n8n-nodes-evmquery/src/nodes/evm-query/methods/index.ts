@@ -6,10 +6,8 @@ import { listChains } from "./load-options";
  * credentials/helpers surface as operations — we reuse the transport layer
  * for consistent error handling across load-options and execute paths.
  */
-const methods = {
+export const methods = {
 	loadOptions: {
 		listChains,
 	},
 };
-
-export { methods };

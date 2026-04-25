@@ -8,7 +8,7 @@ import type { EvmQueryPreset } from "./types";
  * Each preset describes user-facing inputs (`inputs`) and a `build` block
  * that expands into the node parameters via n8n expressions.
  */
-const presets: readonly EvmQueryPreset[] = [
+export const presets: readonly EvmQueryPreset[] = [
 	{
 		id: "erc20-balance",
 		label: "ERC-20 balance",
@@ -79,5 +79,3 @@ const presets: readonly EvmQueryPreset[] = [
 		},
 	},
 ];
-
-export { presets };

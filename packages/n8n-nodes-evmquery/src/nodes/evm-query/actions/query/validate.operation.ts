@@ -11,7 +11,7 @@ import type {
  * Validate shares its property blocks with Execute (expression, context,
  * options) via `./shared.ts`, so `validateFields` stays empty.
  */
-const validateFields: INodeProperties[] = [];
+export const validateFields: INodeProperties[] = [];
 
 /**
  * Query.Validate → POST /query/validate with `{ chain, expression, schema }`.
@@ -19,7 +19,7 @@ const validateFields: INodeProperties[] = [];
  * runtime context values — only the declared types matter here. The API
  * response `{ valid, type, estimatedCredits }` is returned verbatim.
  */
-async function executeQueryValidate(
+export async function executeQueryValidate(
 	this: IExecuteFunctions,
 	itemIndex: number,
 ): Promise<IDataObject> {
@@ -42,5 +42,3 @@ async function executeQueryValidate(
 		body: { chain, expression, schema } satisfies IDataObject,
 	});
 }
-
-export { executeQueryValidate, validateFields };

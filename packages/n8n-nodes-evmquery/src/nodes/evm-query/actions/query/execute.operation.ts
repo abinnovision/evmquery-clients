@@ -16,25 +16,6 @@ import type {
 } from "n8n-workflow";
 
 /**
- * Execute-specific fields live on the shared operation selector — expression,
- * output format, and options are common across Execute/Validate, so they
- * belong in `./shared.ts`. The empty `executeFields` export keeps the
- * dispatcher wiring symmetrical.
- */
-const executeFields: INodeProperties[] = [];
-
-interface QueryExecuteResponse {
-	result: { value: unknown; type: string };
-	meta?: {
-		blockNumber?: number;
-		totalCalls?: number;
-		totalRounds?: number;
-	} | null;
-	performance?: { latencyMs?: number } | null;
-	credits?: { consumed?: number } | null;
-}
-
-/**
  * Shapes a Simple-mode output for downstream nodes / AI callers. Object
  * results are spread at the top level so fields like `name` or `symbol` are
  * directly addressable; scalar results are wrapped under `value`. Meta is
@@ -62,12 +43,31 @@ function toSimpleOutput(response: QueryExecuteResponse): IDataObject {
 }
 
 /**
+ * Execute-specific fields live on the shared operation selector — expression,
+ * output format, and options are common across Execute/Validate, so they
+ * belong in `./shared.ts`. The empty `executeFields` export keeps the
+ * dispatcher wiring symmetrical.
+ */
+export const executeFields: INodeProperties[] = [];
+
+export interface QueryExecuteResponse {
+	result: { value: unknown; type: string };
+	meta?: {
+		blockNumber?: number;
+		totalCalls?: number;
+		totalRounds?: number;
+	} | null;
+	performance?: { latencyMs?: number } | null;
+	credits?: { consumed?: number } | null;
+}
+
+/**
  * Parsed inputs to a `POST /query` call. Both the Execute action and the
  * EvmQueryTrigger poll path read node parameters and then hand off to
  * `runQueryExecute` with this shape — the action adds preset expansion and
  * output shaping around it, the trigger adds value-diffing state.
  */
-interface QueryExecuteParams {
+export interface QueryExecuteParams {
 	chain: string;
 	expression: string;
 	contracts: Record<string, { address: string }>;
@@ -86,7 +86,7 @@ interface QueryExecuteParams {
  *   { chain, expression, schema: { contracts, context? },
  *     context?: <runtime values>, options?: { timeoutMs } }
  */
-async function runQueryExecute(
+export async function runQueryExecute(
 	ctx: IExecuteFunctions | IPollFunctions,
 	params: QueryExecuteParams,
 ): Promise<QueryExecuteResponse> {
@@ -125,7 +125,7 @@ async function runQueryExecute(
  * post-processes per `outputFormat` so AI Agents can consume a flat object
  * while power users can still opt into the full envelope.
  */
-async function executeQueryExecute(
+export async function executeQueryExecute(
 	this: IExecuteFunctions,
 	itemIndex: number,
 ): Promise<IDataObject> {
@@ -185,6 +185,3 @@ async function executeQueryExecute(
 
 	return toSimpleOutput(response);
 }
-
-export { executeFields, executeQueryExecute, runQueryExecute };
-export type { QueryExecuteParams, QueryExecuteResponse };

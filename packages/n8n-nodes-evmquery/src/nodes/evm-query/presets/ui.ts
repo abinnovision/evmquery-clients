@@ -7,14 +7,14 @@ import type { INodeProperties } from "n8n-workflow";
  * myself". Kept as a constant so the executor and the displayOptions `hide`
  * machinery can't accidentally drift.
  */
-const CUSTOM = "custom";
+export const PRESET_CUSTOM = "custom";
 
 /**
  * Flat list of preset ids — fed into `displayOptions.hide` on the
  * custom-query fields so they disappear as soon as any named recipe is
  * active, and used as a lookup set by the executor.
  */
-const PRESET_IDS: string[] = presets.map((p) => p.id);
+export const PRESET_IDS: string[] = presets.map((p) => p.id);
 
 /**
  * Compute the n8n node parameter key for a preset input. The prefix keeps
@@ -24,7 +24,7 @@ const PRESET_IDS: string[] = presets.map((p) => p.id);
  * alphanumeric characters in the preset id are folded to `_` because n8n
  * param keys are referenced by expression like `$parameter["…"]`.
  */
-function paramKey(presetId: string, inputName: string): string {
+export function presetParamKey(presetId: string, inputName: string): string {
 	const safeId = presetId.replace(/[^a-zA-Z0-9]/g, "_");
 
 	return `preset_${safeId}_${inputName}`;
@@ -35,19 +35,19 @@ function paramKey(presetId: string, inputName: string): string {
  * because preset expressions are well-formed by construction, and Describe
  * is a schema-introspection path that doesn't evaluate expressions.
  */
-const presetField: INodeProperties = {
+export const presetField: INodeProperties = {
 	displayName: "Preset",
 	name: "preset",
 	type: "options",
 	noDataExpression: true,
-	default: CUSTOM,
+	default: PRESET_CUSTOM,
 	description:
 		"Pick a ready-made recipe for common queries, or choose Custom expression to author your own",
 	displayOptions: { show: { "/operation": ["execute"] } },
 	options: [
 		{
 			name: "Custom Expression",
-			value: CUSTOM,
+			value: PRESET_CUSTOM,
 			description: "Write your own query using the Expression field",
 		},
 		...presets.map((p) => ({
@@ -65,12 +65,12 @@ const presetField: INodeProperties = {
  * `string` and `number` input types are materialized for v1 — `collection`
  * is reserved for a later preset shape and would need a richer UI block.
  */
-const presetInputFields: INodeProperties[] = presets.flatMap((preset) =>
+export const presetInputFields: INodeProperties[] = presets.flatMap((preset) =>
 	preset.inputs
 		.filter((input) => input.type === "string" || input.type === "number")
 		.map<INodeProperties>((input) => ({
 			displayName: input.displayName,
-			name: paramKey(preset.id, input.name),
+			name: presetParamKey(preset.id, input.name),
 			type: input.type,
 			default: input.type === "number" ? 0 : "",
 			required: input.required === true,
@@ -97,7 +97,7 @@ const presetInputFields: INodeProperties[] = presets.flatMap((preset) =>
  *
  * Any pre-existing `hide` entries on the field are preserved.
  */
-function withHideOnPreset<T extends INodeProperties>(field: T): T {
+export function withHideOnPreset<T extends INodeProperties>(field: T): T {
 	const existing = field.displayOptions ?? {};
 	const existingHide = existing.hide ?? {};
 
@@ -109,12 +109,3 @@ function withHideOnPreset<T extends INodeProperties>(field: T): T {
 		},
 	};
 }
-
-export {
-	CUSTOM,
-	paramKey,
-	presetField,
-	presetInputFields,
-	PRESET_IDS,
-	withHideOnPreset,
-};

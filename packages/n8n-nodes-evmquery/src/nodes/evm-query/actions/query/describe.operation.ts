@@ -12,7 +12,7 @@ import type {
  * Chain + Contracts + Context Types inputs from `./shared.ts`. The empty
  * export keeps the dispatcher uniform with the other Query operations.
  */
-const describeFields: INodeProperties[] = [];
+export const describeFields: INodeProperties[] = [];
 
 /**
  * Query.Describe → POST /query/describe with `{ chain, schema: { contracts,
@@ -20,7 +20,7 @@ const describeFields: INodeProperties[] = [];
  * are supplied because the API treats an empty object as "no context" but
  * we'd rather not send a key that isn't meaningful.
  */
-async function executeQueryDescribe(
+export async function executeQueryDescribe(
 	this: IExecuteFunctions,
 	itemIndex: number,
 ): Promise<IDataObject> {
@@ -42,5 +42,3 @@ async function executeQueryDescribe(
 		body: { chain, schema } satisfies IDataObject,
 	});
 }
-
-export { describeFields, executeQueryDescribe };

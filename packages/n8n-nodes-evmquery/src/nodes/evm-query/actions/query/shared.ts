@@ -1,20 +1,5 @@
 import type { INodeProperties } from "n8n-workflow";
 
-const SOL_TYPES = [
-	"sol_int",
-	"sol_address",
-	"bool",
-	"string",
-	"bytes",
-	"list<sol_int>",
-	"list<sol_address>",
-	"list<bool>",
-	"list<string>",
-	"list<bytes>",
-] as const;
-
-type SolType = (typeof SOL_TYPES)[number];
-
 /**
  * Query-shaped display options: chain / contracts / context fields are
  * meaningful for the three query operations (execute, validate, describe)
@@ -33,10 +18,127 @@ const showForEvaluated = {
 };
 
 /**
+ * Coerce an arbitrary param value into a parsed object when n8n's AI Agent
+ * fed it in via `$fromAI` as a JSON string.
+ */
+function coerceObject(raw: unknown): Record<string, unknown> | undefined {
+	if (raw === undefined || raw === null) {
+		return undefined;
+	}
+
+	if (typeof raw === "string") {
+		const trimmed = raw.trim();
+		if (trimmed === "") {
+			return undefined;
+		}
+
+		try {
+			const parsed = JSON.parse(trimmed) as unknown;
+
+			return typeof parsed === "object" && parsed !== null
+				? (parsed as Record<string, unknown>)
+				: undefined;
+		} catch {
+			return undefined;
+		}
+	}
+
+	if (typeof raw === "object") {
+		return raw as Record<string, unknown>;
+	}
+
+	return undefined;
+}
+
+/**
+ * Type guard for `SolType`. Hoisted function declaration so `parseContext*`
+ * (defined further down) can call it cleanly without a forward const TDZ.
+ */
+function isSolType(v: unknown): v is SolType {
+	return typeof v === "string" && (SOL_TYPES as readonly string[]).includes(v);
+}
+
+/**
+ * Coerces a raw UI value into the JSON shape the API expects for the given
+ * sol type. The coercion is conservative: we only do the minimum necessary
+ * to avoid sending obvious type mismatches (booleans-as-strings, lists
+ * encoded as JSON strings). Everything else, including address checksums
+ * and big-int precision, is delegated to the server.
+ *
+ * For `list<*>` types the caller may arrive via one of three shapes:
+ *
+ *   1. An actual array, from an n8n expression that evaluated to an array
+ *      (Expression-mode toggle in the UI), or from `$fromAI` where the AI
+ *      agent returned a JSON array. Passed through unchanged.
+ *   2. A string containing a JSON array, the Fixed-mode UI path when a
+ *      user hand-types `["0x1","0x2"]`. Parsed here.
+ *   3. Anything else, returned verbatim so the server-side validator can
+ *      produce a clean, typed error instead of the node swallowing it.
+ *
+ * The Value field's UI description (see `contextField` below) documents
+ * paths 1 and 2 for users; keep them in sync.
+ */
+function coerceValue(rawValue: unknown, type: SolType): unknown {
+	if (type === "bool") {
+		if (typeof rawValue === "boolean") {
+			return rawValue;
+		}
+
+		if (typeof rawValue === "string") {
+			const lower = rawValue.trim().toLowerCase();
+			if (lower === "true" || lower === "1") {
+				return true;
+			}
+
+			if (lower === "false" || lower === "0") {
+				return false;
+			}
+		}
+
+		return rawValue;
+	}
+
+	if (type.startsWith("list<")) {
+		if (Array.isArray(rawValue)) {
+			return rawValue;
+		}
+
+		if (typeof rawValue === "string" && rawValue.trim() !== "") {
+			try {
+				const parsed = JSON.parse(rawValue) as unknown;
+
+				return Array.isArray(parsed) ? parsed : rawValue;
+			} catch {
+				return rawValue;
+			}
+		}
+
+		return rawValue;
+	}
+
+	return rawValue;
+}
+
+export const SOL_TYPES = [
+	"sol_int",
+	"sol_address",
+	"bool",
+	"string",
+	"bytes",
+	"list<sol_int>",
+	"list<sol_address>",
+	"list<bool>",
+	"list<string>",
+	"list<bytes>",
+] as const;
+
+export type SolType = (typeof SOL_TYPES)[number];
+
+/**
  * Shared field: Chain dropdown. Feeds from the dynamic `listChains`
  * loadOptions method with a static fallback so the UI never renders empty.
  */
-const chainField: INodeProperties = {
+export const chainField: INodeProperties = {
 	displayName: "Chain",
 	name: "chainId",
 	type: "options",
@@ -53,7 +155,7 @@ const chainField: INodeProperties = {
  * caller can also pass a JSON object via `$fromAI` and the executor
  * normalizes both shapes via `parseContracts`.
  */
-const contractsField: INodeProperties = {
+export const contractsField: INodeProperties = {
 	displayName: "Contracts",
 	name: "contracts",
 	type: "fixedCollection",
@@ -99,7 +201,7 @@ const contractsField: INodeProperties = {
  * stays clean without forcing the user to re-enter type info when they
  * switch operations.
  */
-const contextField: INodeProperties = {
+export const contextField: INodeProperties = {
 	displayName: "Context Variables",
 	name: "context",
 	type: "fixedCollection",
@@ -183,7 +285,7 @@ const contextField: INodeProperties = {
  * deliberate nudge: expressions are routinely multi-line (e.g. conditional
  * returns) and a single-line input encourages the user to paste minified CEL.
  */
-const expressionField: INodeProperties = {
+export const expressionField: INodeProperties = {
 	displayName: "Expression",
 	name: "expression",
 	type: "string",
@@ -205,7 +307,7 @@ const expressionField: INodeProperties = {
  * (Simple) is invisible to users who don't care, while power users can
  * still opt into the Raw envelope via "Add option".
  */
-const optionsField: INodeProperties = {
+export const optionsField: INodeProperties = {
 	displayName: "Options",
 	name: "options",
 	type: "collection",
@@ -250,45 +352,14 @@ const optionsField: INodeProperties = {
 };
 
 /**
- * Coerce an arbitrary param value into a parsed object when n8n's AI Agent
- * fed it in via `$fromAI` as a JSON string.
- */
-function coerceObject(raw: unknown): Record<string, unknown> | undefined {
-	if (raw === undefined || raw === null) {
-		return undefined;
-	}
-
-	if (typeof raw === "string") {
-		const trimmed = raw.trim();
-		if (trimmed === "") {
-			return undefined;
-		}
-
-		try {
-			const parsed = JSON.parse(trimmed) as unknown;
-
-			return typeof parsed === "object" && parsed !== null
-				? (parsed as Record<string, unknown>)
-				: undefined;
-		} catch {
-			return undefined;
-		}
-	}
-
-	if (typeof raw === "object") {
-		return raw as Record<string, unknown>;
-	}
-
-	return undefined;
-}
-
-/**
  * Normalizes a Contracts parameter into the evmquery API's expected shape:
  * `{ <name>: { address: "0x…" } }`. Accepts either the UI fixedCollection
  * layout (`{ entries: [{ name, address }] }`) or an AI-provided JSON object
  * (either `{ Name: { address } }` or the flat `{ Name: "0x…" }`).
  */
-function parseContracts(raw: unknown): Record<string, { address: string }> {
+export function parseContracts(
+	raw: unknown,
+): Record<string, { address: string }> {
 	const root = coerceObject(raw);
 	if (!root) {
 		return {};
@@ -329,9 +400,6 @@ function parseContracts(raw: unknown): Record<string, { address: string }> {
 	return result;
 }
 
-const isSolType = (v: unknown): v is SolType =>
-	typeof v === "string" && (SOL_TYPES as readonly string[]).includes(v);
-
 /**
  * Normalizes a Context parameter into `schema.context` type declarations.
  * Works on both the unified `context` fixedCollection (ignoring the Value
@@ -339,7 +407,7 @@ const isSolType = (v: unknown): v is SolType =>
  * dropped so the server-side validator produces a clean error instead of
  * the n8n node leaking garbage into the request.
  */
-function parseContextTypes(raw: unknown): Record<string, SolType> {
+export function parseContextTypes(raw: unknown): Record<string, SolType> {
 	const root = coerceObject(raw);
 	if (!root) {
 		return {};
@@ -372,73 +440,12 @@ function parseContextTypes(raw: unknown): Record<string, SolType> {
 }
 
 /**
- * Coerces a raw UI value into the JSON shape the API expects for the given
- * sol type. The coercion is conservative: we only do the minimum necessary
- * to avoid sending obvious type mismatches (booleans-as-strings, lists
- * encoded as JSON strings). Everything else, including address checksums
- * and big-int precision, is delegated to the server.
- *
- * For `list<*>` types the caller may arrive via one of three shapes:
- *
- *   1. An actual array, from an n8n expression that evaluated to an array
- *      (Expression-mode toggle in the UI), or from `$fromAI` where the AI
- *      agent returned a JSON array. Passed through unchanged.
- *   2. A string containing a JSON array, the Fixed-mode UI path when a
- *      user hand-types `["0x1","0x2"]`. Parsed here.
- *   3. Anything else, returned verbatim so the server-side validator can
- *      produce a clean, typed error instead of the node swallowing it.
- *
- * The Value field's UI description (see `contextField` above) documents
- * paths 1 and 2 for users; keep them in sync.
- */
-function coerceValue(rawValue: unknown, type: SolType): unknown {
-	if (type === "bool") {
-		if (typeof rawValue === "boolean") {
-			return rawValue;
-		}
-
-		if (typeof rawValue === "string") {
-			const lower = rawValue.trim().toLowerCase();
-			if (lower === "true" || lower === "1") {
-				return true;
-			}
-
-			if (lower === "false" || lower === "0") {
-				return false;
-			}
-		}
-
-		return rawValue;
-	}
-
-	if (type.startsWith("list<")) {
-		if (Array.isArray(rawValue)) {
-			return rawValue;
-		}
-
-		if (typeof rawValue === "string" && rawValue.trim() !== "") {
-			try {
-				const parsed = JSON.parse(rawValue) as unknown;
-
-				return Array.isArray(parsed) ? parsed : rawValue;
-			} catch {
-				return rawValue;
-			}
-		}
-
-		return rawValue;
-	}
-
-	return rawValue;
-}
-
-/**
  * Extracts the runtime values half of the Context Variables collection.
  * Requires the parsed types map so it can apply per-type coercion (bool,
  * list<*>). Only emits entries whose type is known; stray values without a
  * declared type would be dropped by the API anyway.
  */
-function parseContextValues(
+export function parseContextValues(
 	raw: unknown,
 	types: Record<string, SolType>,
 ): Record<string, unknown> {
@@ -490,16 +497,3 @@ function parseContextValues(
 
 	return result;
 }
-
-export {
-	chainField,
-	contextField,
-	contractsField,
-	expressionField,
-	optionsField,
-	parseContextTypes,
-	parseContextValues,
-	parseContracts,
-	SOL_TYPES,
-};
-export type { SolType };

@@ -17,7 +17,7 @@ import { createHash } from "node:crypto";
  *
  * The output is opaque — only equality comparison and hashing are meaningful.
  */
-function canonicalize(value: unknown): string {
+export function canonicalize(value: unknown): string {
 	return JSON.stringify(value, (_key, raw: unknown) => {
 		if (typeof raw === "bigint") {
 			return { __bigint__: raw.toString() };
@@ -37,7 +37,7 @@ function canonicalize(value: unknown): string {
 	});
 }
 
-interface FingerprintParams {
+export interface FingerprintParams {
 	chain: string;
 	expression: string;
 	contracts: Record<string, { address: string }>;
@@ -53,7 +53,7 @@ interface FingerprintParams {
  * would let a stale cursor from the previous formula suppress the first
  * legitimate fire.
  */
-function paramFingerprint(p: FingerprintParams): string {
+export function paramFingerprint(p: FingerprintParams): string {
 	const canonical = canonicalize({
 		chain: p.chain,
 		expression: p.expression,
@@ -64,6 +64,3 @@ function paramFingerprint(p: FingerprintParams): string {
 
 	return createHash("sha1").update(canonical).digest("hex");
 }
-
-export { canonicalize, paramFingerprint };
-export type { FingerprintParams };

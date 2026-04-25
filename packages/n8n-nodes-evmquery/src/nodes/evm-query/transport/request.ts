@@ -32,7 +32,7 @@ interface EvmQueryRequestOptions {
  * Base URL for all evmquery API calls. There is only one deployment, so this
  * is a compile-time constant rather than a credential field.
  */
-const EVMQUERY_BASE_URL = "https://api.evmquery.com/api/v1";
+export const EVMQUERY_BASE_URL = "https://api.evmquery.com/api/v1";
 
 /**
  * Thin wrapper around `httpRequestWithAuthentication` that injects the
@@ -42,7 +42,7 @@ const EVMQUERY_BASE_URL = "https://api.evmquery.com/api/v1";
  * Every evmquery operation goes through this, so error messages stay
  * consistent across the node and the AI tool surface.
  */
-async function evmQueryRequest<T = unknown>(
+export async function evmQueryRequest<T = unknown>(
 	ctx: EvmQueryContext,
 	options: EvmQueryRequestOptions,
 ): Promise<T> {
@@ -73,5 +73,4 @@ async function evmQueryRequest<T = unknown>(
 	}
 }
 
-export { evmQueryRequest, EVMQUERY_BASE_URL };
 export type { EvmQueryContext, EvmQueryRequestOptions };

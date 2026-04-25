@@ -9,9 +9,9 @@ import type {
 /**
  * Usage.Get takes no input.
  */
-const getUsageFields: INodeProperties[] = [];
+export const getUsageFields: INodeProperties[] = [];
 
-interface UsageStatsResponse {
+export interface UsageStatsResponse {
 	credits: { used: number; allowance: number; remaining: number };
 	tier: string;
 	periodStart: string;
@@ -23,7 +23,7 @@ interface UsageStatsResponse {
  * Left in the API's native shape so workflows can alert on
  * `credits.remaining` without re-mapping.
  */
-async function executeGetUsage(
+export async function executeGetUsage(
 	this: IExecuteFunctions,
 	_itemIndex: number,
 ): Promise<IDataObject> {
@@ -34,6 +34,3 @@ async function executeGetUsage(
 
 	return { ...response } satisfies IDataObject;
 }
-
-export { executeGetUsage, getUsageFields };
-export type { UsageStatsResponse };
