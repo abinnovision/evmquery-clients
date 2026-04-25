@@ -47,21 +47,21 @@ const operationField: INodeProperties = {
 		{
 			name: "Describe Schema",
 			value: "describe",
-			action: "Describe contract schema",
+			action: "Describe a contract schema",
 			description:
 				"Inspect a chain's contracts and return the methods, argument types, and context variables available to expressions. Use before Execute when unsure which methods a contract exposes.",
 		},
 		{
 			name: "List Chains",
 			value: "listChains",
-			action: "List supported EVM chains",
+			action: "List EVM chains",
 			description:
 				"Return every EVM chain evmquery supports, including its internal ID and EVM chain ID",
 		},
 		{
 			name: "Get Usage",
 			value: "getUsage",
-			action: "Get credit usage snapshot",
+			action: "Get current credit usage",
 			description:
 				"Return the organization's current credit balance, tier, and billing period",
 		},
