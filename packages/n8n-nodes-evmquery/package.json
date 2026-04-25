@@ -1,7 +1,7 @@
 {
 	"name": "n8n-nodes-evmquery",
 	"version": "0.1.0",
-	"description": "n8n community node for evmquery — query EVM smart contracts (Ethereum, Base, BNB) via CEL expressions.",
+	"description": "n8n community node for evmquery: query EVM smart contracts via CEL expressions.",
 	"keywords": [
 		"n8n-community-node-package",
 		"n8n",

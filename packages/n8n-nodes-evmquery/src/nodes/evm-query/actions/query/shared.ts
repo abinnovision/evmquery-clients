@@ -146,7 +146,7 @@ export const chainField: INodeProperties = {
 	default: "evm_ethereum",
 	required: true,
 	description:
-		'EVM chain to query. Pick from the list, or pass an evmquery chain id (e.g. <code>evm_ethereum</code>, <code>evm_base</code>, <code>evm_bnb_mainnet</code>) via an <a href="https://docs.n8n.io/code/expressions/">expression</a>. The numeric EVM chain IDs shown in parentheses (1, 8453, 56) are reference only; pass the <code>evm_*</code> id.',
+		'EVM chain to query. Pick from the list, or pass an <code>evm_*</code> chain id via an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	displayOptions: showForQuery,
 };
 
@@ -271,7 +271,7 @@ export const contextField: INodeProperties = {
 					placeholder: '0xabc…  ·  true/false  ·  ["0x1","0x2"]',
 					hint: "For lists from input data, toggle Expression mode and use e.g. <code>{{ $json.holders }}</code>.",
 					description:
-						'Runtime value. Scalars: type directly (for `bool` use `true`/`false`). Lists from input: toggle Expression mode and write e.g. <code>{{ $json.holders }}</code>. Lists by hand: paste a JSON array like <code>["0x1","0x2"]</code>.',
+						"Runtime value bound to the variable. Scalars accept a literal; lists accept a JSON array or an expression that evaluates to one.",
 					displayOptions: showForEvaluated,
 				},
 			],
