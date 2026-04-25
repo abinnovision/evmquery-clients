@@ -36,13 +36,11 @@ async function executeQueryDescribe(
 		schema["context"] = contextTypes;
 	}
 
-	const response = await evmQueryRequest<IDataObject>(this, {
+	return await evmQueryRequest<IDataObject>(this, {
 		method: "POST",
 		path: "/query/describe",
 		body: { chain, schema } satisfies IDataObject,
 	});
-
-	return response;
 }
 
 export { describeFields, executeQueryDescribe };

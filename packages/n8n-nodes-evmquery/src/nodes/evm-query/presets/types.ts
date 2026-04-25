@@ -4,7 +4,7 @@ import type { SolType } from "../actions/query";
  * A single user-facing input that backs a preset. The `name` is the key the
  * template's `={{ $input.<name> }}` expressions resolve against.
  */
-interface PresetInput {
+export interface PresetInput {
 	name: string;
 	displayName: string;
 	type: "string" | "number" | "collection";
@@ -22,7 +22,7 @@ interface PresetInput {
  * The `build` block uses n8n expression strings (`={{ $input.<name> }}`) so
  * values plug straight into the node parameters at runtime.
  */
-interface EvmQueryPreset {
+export interface EvmQueryPreset {
 	id: string;
 	label: string;
 	description?: string;
@@ -34,5 +34,3 @@ interface EvmQueryPreset {
 		expression: string;
 	};
 }
-
-export type { EvmQueryPreset, PresetInput };

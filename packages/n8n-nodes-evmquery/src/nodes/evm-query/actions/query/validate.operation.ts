@@ -36,13 +36,11 @@ async function executeQueryValidate(
 		schema["context"] = contextTypes;
 	}
 
-	const response = await evmQueryRequest<IDataObject>(this, {
+	return await evmQueryRequest<IDataObject>(this, {
 		method: "POST",
 		path: "/query/validate",
 		body: { chain, expression, schema } satisfies IDataObject,
 	});
-
-	return response;
 }
 
 export { executeQueryValidate, validateFields };
