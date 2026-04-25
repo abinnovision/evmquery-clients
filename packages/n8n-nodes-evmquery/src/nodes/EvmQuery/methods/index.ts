@@ -1,4 +1,4 @@
-import { listChains } from "./loadOptions";
+import { listChains } from "./load-options";
 
 /**
  * n8n calls these via `INodeType.methods.loadOptions[methodName]`. Each

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { listChains, STATIC_CHAINS } from "./loadOptions";
+import { listChains, STATIC_CHAINS } from "./load-options";
 
 import type { ILoadOptionsFunctions, INode } from "n8n-workflow";
 
