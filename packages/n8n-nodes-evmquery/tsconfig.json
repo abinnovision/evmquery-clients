@@ -1,5 +1,5 @@
 {
-	"extends": "@evmquery-clients-internal/tsconfig/tsconfig.base.json",
+	"extends": "@internal/tsconfig/tsconfig.base.json",
 	"compilerOptions": {
 		"noEmit": true
 	},

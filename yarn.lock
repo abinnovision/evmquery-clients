@@ -403,15 +403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evmquery-clients-internal/tsconfig@workspace:^, @evmquery-clients-internal/tsconfig@workspace:packages/tsconfig":
-  version: 0.0.0-use.local
-  resolution: "@evmquery-clients-internal/tsconfig@workspace:packages/tsconfig"
-  dependencies:
-    prettier: "npm:^3.8.3"
-    typescript: "npm:^6.0.3"
-  languageName: unknown
-  linkType: soft
-
 "@evmquery-clients/monorepo@workspace:.":
   version: 0.0.0-use.local
   resolution: "@evmquery-clients/monorepo@workspace:."
@@ -487,6 +478,15 @@ __metadata:
   checksum: 10/0b32cfd362bea7a30fbf80bb38dcaf77fee9c2cae477ee80b460871d03590110ac9c77d654f04ec5beaf71b6f6a89851bdf6c1e34ccdf2f686bd86fcd97d9e61
   languageName: node
   linkType: hard
+
+"@internal/tsconfig@workspace:^, @internal/tsconfig@workspace:packages/tsconfig":
+  version: 0.0.0-use.local
+  resolution: "@internal/tsconfig@workspace:packages/tsconfig"
+  dependencies:
+    prettier: "npm:^3.8.3"
+    typescript: "npm:^6.0.3"
+  languageName: unknown
+  linkType: soft
 
 "@isaacs/fs-minipass@npm:^4.0.0":
   version: 4.0.1
@@ -4255,7 +4255,7 @@ __metadata:
   dependencies:
     "@abinnovision/eslint-config-base": "npm:^3.2.2"
     "@abinnovision/prettier-config": "npm:^2.1.5"
-    "@evmquery-clients-internal/tsconfig": "workspace:^"
+    "@internal/tsconfig": "workspace:^"
     "@types/gulp": "npm:^4.0.18"
     eslint: "npm:^10.2.1"
     eslint-plugin-n8n-nodes-base: "npm:^1.16.6"

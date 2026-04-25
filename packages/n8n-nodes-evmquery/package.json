@@ -66,7 +66,7 @@
 	"devDependencies": {
 		"@abinnovision/eslint-config-base": "^3.2.2",
 		"@abinnovision/prettier-config": "^2.1.5",
-		"@evmquery-clients-internal/tsconfig": "workspace:^",
+		"@internal/tsconfig": "workspace:^",
 		"@types/gulp": "^4.0.18",
 		"eslint": "^10.2.1",
 		"eslint-plugin-n8n-nodes-base": "^1.16.6",
