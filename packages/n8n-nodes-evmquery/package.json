@@ -67,15 +67,15 @@
 		"@abinnovision/eslint-config-base": "^3.2.2",
 		"@abinnovision/prettier-config": "^2.1.5",
 		"@evmquery-clients-internal/tsconfig": "workspace:^",
-		"@types/gulp": "^4.0.17",
+		"@types/gulp": "^4.0.18",
 		"eslint": "^10.2.1",
-		"eslint-plugin-n8n-nodes-base": "^1.16.3",
-		"gulp": "^5.0.0",
-		"n8n-workflow": "^2.16.0",
-		"prettier": "^3.8.1",
+		"eslint-plugin-n8n-nodes-base": "^1.16.6",
+		"gulp": "^5.0.1",
+		"n8n-workflow": "^2.18.3",
+		"prettier": "^3.8.3",
 		"typescript": "^6.0.3",
-		"vitest": "^4.1.0",
-		"zod": "3.25.67"
+		"vitest": "^4.1.5",
+		"zod": "4.3.6"
 	},
 	"publishConfig": {
 		"access": "public",
