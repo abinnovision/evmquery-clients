@@ -80,7 +80,7 @@ export const description: INodeTypeDescription = {
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',
 	description:
-		"Query EVM smart contracts on Ethereum, Base, BNB and more — balances, metadata, ownership, and arbitrary reads",
+		"Read on-chain data from Ethereum, Base, BNB and other EVM chains using CEL expressions",
 	defaults: { name: "evmquery" },
 	inputs: ["main"] as never,
 	outputs: ["main"] as never,

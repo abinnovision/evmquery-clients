@@ -111,7 +111,7 @@ export const description: INodeTypeDescription = {
 	version: 1,
 	subtitle: '={{$parameter["chainId"]}}: {{$parameter["expression"]}}',
 	description:
-		"Fire a workflow when a CEL expression's on-chain value changes. Polls evmquery on a schedule and emits only on an actual value change (ignoring meta fields like block number and credits).",
+		"Trigger a workflow when on-chain data on Ethereum, Base, BNB or another EVM chain changes",
 	defaults: { name: "evmquery Trigger" },
 	polling: true,
 	inputs: [] as never,
