@@ -10,7 +10,7 @@ export class EvmQueryApi implements ICredentialType {
 
 	public displayName = "evmquery API";
 
-	public documentationUrl = "https://evmquery.com";
+	public documentationUrl = "https://app.evmquery.com/docs";
 
 	public properties: INodeProperties[] = [
 		{
