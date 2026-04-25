@@ -76,7 +76,6 @@ const operationField: INodeProperties = {
 export const description: INodeTypeDescription = {
 	displayName: "evmquery",
 	name: "evmQuery",
-	icon: "file:evmquery.svg",
 	group: ["input"],
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',
@@ -86,12 +85,6 @@ export const description: INodeTypeDescription = {
 	inputs: ["main"] as never,
 	outputs: ["main"] as never,
 	credentials: [{ name: "evmQueryApi", required: true }],
-	usableAsTool: {
-		replacements: {
-			description:
-				"Read EVM smart-contract state for AI agents: token balances, metadata, ownership, and arbitrary view-function calls",
-		},
-	},
 	properties: [
 		operationField,
 		presetField,

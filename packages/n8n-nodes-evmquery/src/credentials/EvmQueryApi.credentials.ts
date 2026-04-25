@@ -1,5 +1,6 @@
 import type {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -9,6 +10,8 @@ export class EvmQueryApi implements ICredentialType {
 	public name = "evmQueryApi";
 
 	public displayName = "evmquery API";
+
+	public icon: Icon = "file:../icons/evmquery.svg";
 
 	public documentationUrl = "https://app.evmquery.com/docs";
 

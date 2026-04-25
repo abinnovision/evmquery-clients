@@ -5,10 +5,10 @@ import {
 	parseContextValues,
 	parseContracts,
 	runQueryExecute,
-} from "../EvmQuery/actions/query";
-import { methods } from "../EvmQuery/methods";
+} from "../evm-query/actions/query";
+import { methods } from "../evm-query/methods";
 
-import type { QueryExecuteResponse } from "../EvmQuery/actions/query";
+import type { QueryExecuteResponse } from "../evm-query/actions/query";
 import type {
 	INodeExecutionData,
 	INodeType,
@@ -35,7 +35,23 @@ interface PolledState {
  * from the diff so block-producing activity alone never triggers a fire.
  */
 export class EvmQueryTrigger implements INodeType {
-	public description: INodeTypeDescription = description;
+	/*
+	 * `icon` is inlined here for the same reason as in `EvmQuery.node.ts`:
+	 * @n8n/community-nodes/icon-validation only inspects the class file's AST
+	 * and does not follow imports.
+	 *
+	 * `usableAsTool: true` exists only to satisfy the sibling
+	 * @n8n/community-nodes/node-usable-as-tool rule, which fires on every node
+	 * class regardless of whether it's a trigger. n8n's tool dispatch never
+	 * invokes polling triggers as tools — they are workflow entry points — so
+	 * the flag is harmless at runtime. The `INodeTypeDescription` type does
+	 * not permit `false`, hence `true`.
+	 */
+	public description: INodeTypeDescription = {
+		...description,
+		icon: "file:../../icons/evmquery.svg",
+		usableAsTool: true,
+	};
 
 	public methods = methods;
 

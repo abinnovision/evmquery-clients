@@ -31,7 +31,23 @@ function toExecutionData(
 }
 
 export class EvmQuery implements INodeType {
-	public description: INodeTypeDescription = description;
+	/*
+	 * `icon` is inlined here so the @n8n/community-nodes/icon-validation lint
+	 * rule (which inspects this class file's AST and does not follow imports)
+	 * can find it on the description object literal. Path is resolved relative
+	 * to this source file at lint time and to the compiled .js at runtime —
+	 * both layouts mirror each other (src/icons → dist/icons).
+	 */
+	public description: INodeTypeDescription = {
+		...description,
+		icon: "file:../../icons/evmquery.svg",
+		usableAsTool: {
+			replacements: {
+				description:
+					"Read EVM smart-contract state for AI agents: token balances, metadata, ownership, and arbitrary view-function calls",
+			},
+		},
+	};
 
 	public methods = methods;
 

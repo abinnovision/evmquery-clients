@@ -3,14 +3,14 @@ import {
 	contextField,
 	contractsField,
 	expressionField,
-} from "../EvmQuery/actions/query";
+} from "../evm-query/actions/query";
 
 import type { INodeProperties, INodeTypeDescription } from "n8n-workflow";
 
 /**
  * Strip `displayOptions` from a field descriptor — both at the top level
  * and on any inner `options[].values[]` entries. The shared field objects
- * in `EvmQuery/actions/query/shared.ts` carry gates like
+ * in `evm-query/actions/query/shared.ts` carry gates like
  * `show: { "/operation": ["execute", ...] }` so they only render for the
  * action node's relevant operations; `contextField` additionally gates its
  * `Value` column the same way. The trigger has no operation selector, so
@@ -99,16 +99,14 @@ const optionsField: INodeProperties = {
 };
 
 /**
- * Top-level description for the `EvmQueryTrigger` polling node.
- *
- * Icon is referenced from the sibling `EvmQuery` directory so we don't
- * maintain two copies; n8n resolves `file:` paths relative to the compiled
- * .js location, and `gulpfile.js` already globs `src/nodes/**\/*.svg`.
+ * Top-level description for the `EvmQueryTrigger` polling node. The `icon`
+ * field is set on the node class itself (in `EvmQueryTrigger.node.ts`) so
+ * the @n8n/community-nodes/icon-validation lint rule — which only inspects
+ * the class file's AST and does not follow imports — can see it.
  */
 export const description: INodeTypeDescription = {
 	displayName: "evmquery Trigger",
 	name: "evmQueryTrigger",
-	icon: "file:../EvmQuery/evmquery.svg",
 	group: ["trigger"],
 	version: 1,
 	subtitle: '={{$parameter["chainId"]}}: {{$parameter["expression"]}}',

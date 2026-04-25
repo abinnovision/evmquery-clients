@@ -1,11 +1,14 @@
 import { dest, parallel, src } from "gulp";
 
 /**
- * Copies SVG icon assets from src/ to the matching dist/ path so n8n's node
- * loader can find them alongside the compiled .js files.
+ * Copies SVG icon assets from `src/icons/` to `dist/icons/` so n8n's node
+ * loader can resolve `file:` icon paths at runtime. The single shared
+ * directory keeps node and credential classes pointing at one source of
+ * truth and matches how the icon-validation lint rule resolves paths
+ * (relative to the source file).
  */
 const buildIcons = () =>
-	src("src/nodes/**/*.svg", { base: "src" }).pipe(dest("dist"));
+	src("src/icons/**/*.svg", { base: "src" }).pipe(dest("dist"));
 
 /**
  * Copies the codex metadata JSON files (EvmQuery.node.json) alongside the
