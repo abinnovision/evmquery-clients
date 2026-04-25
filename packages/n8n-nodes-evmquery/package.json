@@ -33,7 +33,7 @@
 		"LICENSE.md"
 	],
 	"scripts": {
-		"build": "tsc -p tsconfig.build.json && gulp build:assets",
+		"build": "tsc -p tsconfig.build.json && NODE_OPTIONS='--import tsx' gulp build:assets",
 		"dev": "tsc --watch -p tsconfig.build.json",
 		"format:check": "prettier --check '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
 		"format:fix": "prettier --write '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
@@ -73,6 +73,7 @@
 		"gulp": "^5.0.1",
 		"n8n-workflow": "^2.18.3",
 		"prettier": "^3.8.3",
+		"tsx": "^4.20.7",
 		"typescript": "^6.0.3",
 		"vitest": "^4.1.5",
 		"zod": "4.3.6"
