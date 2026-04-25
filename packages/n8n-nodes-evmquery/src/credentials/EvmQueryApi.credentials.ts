@@ -1,5 +1,8 @@
+import { EVMQUERY_BASE_URL } from "../config";
+
 import type {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -10,7 +13,9 @@ export class EvmQueryApi implements ICredentialType {
 
 	public displayName = "evmquery API";
 
-	public documentationUrl = "https://evmquery.com";
+	public icon: Icon = "file:../icons/evmquery.svg";
+
+	public documentationUrl = "https://app.evmquery.com/docs";
 
 	public properties: INodeProperties[] = [
 		{
@@ -35,7 +40,7 @@ export class EvmQueryApi implements ICredentialType {
 
 	public test: ICredentialTestRequest = {
 		request: {
-			baseURL: "https://api.evmquery.com/api/v1",
+			baseURL: EVMQUERY_BASE_URL,
 			url: "/usage",
 			method: "GET",
 		},

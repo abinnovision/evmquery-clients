@@ -1,7 +1,7 @@
 {
 	"name": "n8n-nodes-evmquery",
 	"version": "0.1.0",
-	"description": "n8n community node for evmquery — query EVM smart contracts (Ethereum, Base, BNB) via CEL expressions.",
+	"description": "n8n community node for evmquery: query EVM smart contracts via CEL expressions.",
 	"keywords": [
 		"n8n-community-node-package",
 		"n8n",
@@ -33,7 +33,7 @@
 		"LICENSE.md"
 	],
 	"scripts": {
-		"build": "tsc -p tsconfig.build.json && gulp build:assets",
+		"build": "tsc -p tsconfig.build.json && NODE_OPTIONS='--import tsx' gulp build:assets",
 		"dev": "tsc --watch -p tsconfig.build.json",
 		"format:check": "prettier --check '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
 		"format:fix": "prettier --write '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
@@ -48,8 +48,8 @@
 			"dist/credentials/EvmQueryApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/EvmQuery/EvmQuery.node.js",
-			"dist/nodes/EvmQueryTrigger/EvmQueryTrigger.node.js"
+			"dist/nodes/evm-query/EvmQuery.node.js",
+			"dist/nodes/evm-query-trigger/EvmQueryTrigger.node.js"
 		]
 	},
 	"lint-staged": {
@@ -66,16 +66,18 @@
 	"devDependencies": {
 		"@abinnovision/eslint-config-base": "^3.2.2",
 		"@abinnovision/prettier-config": "^2.1.5",
-		"@evmquery-clients-internal/tsconfig": "workspace:^",
-		"@types/gulp": "^4.0.17",
-		"eslint": "^10.2.1",
-		"eslint-plugin-n8n-nodes-base": "^1.16.3",
-		"gulp": "^5.0.0",
-		"n8n-workflow": "^2.16.0",
-		"prettier": "^3.8.1",
+		"@internal/tsconfig": "workspace:^",
+		"@n8n/eslint-plugin-community-nodes": "^0.12.0",
+		"@types/gulp": "^4.0.18",
+		"eslint": "^9.39.4",
+		"eslint-plugin-n8n-nodes-base": "^1.16.6",
+		"gulp": "^5.0.1",
+		"n8n-workflow": "^2.18.3",
+		"prettier": "^3.8.3",
+		"tsx": "^4.20.7",
 		"typescript": "^6.0.3",
-		"vitest": "^4.1.0",
-		"zod": "3.25.67"
+		"vitest": "^4.1.5",
+		"zod": "4.3.6"
 	},
 	"publishConfig": {
 		"access": "public",

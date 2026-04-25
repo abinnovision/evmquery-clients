@@ -1,3 +1,3 @@
-export { EvmQueryApi } from "./credentials/EvmQueryApi.credentials";
-export { EvmQuery } from "./nodes/EvmQuery/EvmQuery.node";
-export { EvmQueryTrigger } from "./nodes/EvmQueryTrigger/EvmQueryTrigger.node";
+export * from "./credentials/EvmQueryApi.credentials";
+export * from "./nodes/evm-query/EvmQuery.node";
+export * from "./nodes/evm-query-trigger/EvmQueryTrigger.node";
