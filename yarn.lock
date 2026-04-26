@@ -702,9 +702,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@evmquery-clients/sdk@workspace:packages/sdk":
+"@evmquery/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
-  resolution: "@evmquery-clients/sdk@workspace:packages/sdk"
+  resolution: "@evmquery/sdk@workspace:packages/sdk"
   dependencies:
     "@abinnovision/eslint-config-base": "npm:^3.2.2"
     "@abinnovision/prettier-config": "npm:^2.1.5"
