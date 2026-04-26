@@ -1,3 +1,4 @@
 {
-	"packages/n8n-nodes-evmquery": "0.2.0"
+	"packages/n8n-nodes-evmquery": "0.2.0",
+	"packages/sdk": "1.0.0"
 }
