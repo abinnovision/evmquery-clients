@@ -4,13 +4,8 @@
 	"include-component-in-tag": true,
 	"release-type": "node",
 	"packages": {
-		"packages/n8n-nodes-evmquery": {}
+		"packages/n8n-nodes-evmquery": {},
+		"packages/sdk": {}
 	},
-	"plugins": [
-		{
-			"type": "linked-versions",
-			"groupName": "evmquery-clients",
-			"components": ["n8n-nodes-evmquery"]
-		}
-	]
+	"separate-pull-requests": true
 }
