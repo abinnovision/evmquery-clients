@@ -1,6 +1,6 @@
 {
 	"name": "@evmquery-clients/sdk",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "Type-safe TypeScript SDK for evmquery.com, generated from the OpenAPI spec.",
 	"keywords": [
 		"evmquery",
