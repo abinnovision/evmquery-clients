@@ -1,0 +1,12 @@
+{
+	"extends": "@internal/tsconfig/tsconfig.base.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"verbatimModuleSyntax": false,
+		"lib": ["ES2024", "DOM"]
+	},
+	"include": ["src/**/*", "test/**/*", "*.ts"],
+	"exclude": ["node_modules", "dist"]
+}

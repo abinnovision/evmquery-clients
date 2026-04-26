@@ -1,0 +1,80 @@
+{
+	"name": "@evmquery-clients/sdk",
+	"version": "0.0.1",
+	"description": "Type-safe TypeScript SDK for evmquery.com, generated from the OpenAPI spec.",
+	"keywords": [
+		"evmquery",
+		"evm",
+		"ethereum",
+		"sdk",
+		"openapi",
+		"smart-contracts",
+		"cel"
+	],
+	"homepage": "https://github.com/abinnovision/evmquery-clients/tree/main/packages/sdk#readme",
+	"repository": {
+		"url": "https://github.com/abinnovision/evmquery-clients",
+		"directory": "packages/sdk"
+	},
+	"license": "Apache-2.0",
+	"author": {
+		"name": "abi group GmbH",
+		"email": "info@abigroup.io",
+		"url": "https://abigroup.io/"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.cts",
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE.md"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"format:check": "prettier --check '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
+		"format:fix": "prettier --write '{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}'",
+		"generate": "openapi-ts",
+		"lint:check": "eslint '{{src,test}/**/*,*}.{t,j}s{,x}'",
+		"lint:fix": "eslint '{{src,test}/**/*,*}.{t,j}s{,x}' --fix",
+		"test-unit": "vitest run",
+		"test-unit:watch": "vitest watch",
+		"typecheck": "tsc --noEmit"
+	},
+	"lint-staged": {
+		"{{src,test}/**/*,*}.{{t,j}s{,x},json{,5},md,y{,a}ml}": [
+			"prettier --write"
+		],
+		"{src/**/*,*}.{t,j}s{,x}": [
+			"eslint --fix"
+		]
+	},
+	"devDependencies": {
+		"@abinnovision/eslint-config-base": "^3.2.2",
+		"@abinnovision/prettier-config": "^2.1.5",
+		"@hey-api/openapi-ts": "^0.96.1",
+		"@internal/tsconfig": "workspace:^",
+		"eslint": "^9.39.4",
+		"prettier": "^3.8.3",
+		"tsdown": "^0.21.10",
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.5"
+	},
+	"publishConfig": {
+		"access": "public",
+		"npm": true,
+		"npmAccess": "public"
+	}
+}
