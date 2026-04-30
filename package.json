@@ -34,10 +34,10 @@
 	},
 	"prettier": "@abinnovision/prettier-config",
 	"devDependencies": {
-		"@abinnovision/commitlint-config": "^2.2.4",
-		"@abinnovision/prettier-config": "^2.1.5",
+		"@abinnovision/commitlint-config": "^2.3.0",
+		"@abinnovision/prettier-config": "^2.2.0",
 		"@arethetypeswrong/core": "^0.18.2",
-		"@commitlint/cli": "^20.5.2",
+		"@commitlint/cli": "^20.5.3",
 		"@vitest/coverage-v8": "^4.1.5",
 		"concurrently": "^9.2.1",
 		"husky": "^9.1.7",
