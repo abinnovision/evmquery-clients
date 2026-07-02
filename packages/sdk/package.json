@@ -64,7 +64,7 @@
 	"devDependencies": {
 		"@abinnovision/eslint-config-base": "^3.2.2",
 		"@abinnovision/prettier-config": "^2.1.5",
-		"@hey-api/openapi-ts": "^0.96.1",
+		"@hey-api/openapi-ts": "^0.97.3",
 		"@internal/tsconfig": "workspace:^",
 		"eslint": "^9.39.4",
 		"prettier": "^3.8.3",
