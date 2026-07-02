@@ -708,7 +708,7 @@ __metadata:
   dependencies:
     "@abinnovision/eslint-config-base": "npm:^3.2.2"
     "@abinnovision/prettier-config": "npm:^2.1.5"
-    "@hey-api/openapi-ts": "npm:^0.96.1"
+    "@hey-api/openapi-ts": "npm:^0.97.3"
     "@internal/tsconfig": "workspace:^"
     eslint: "npm:^9.39.4"
     prettier: "npm:^3.8.3"
@@ -734,38 +734,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/codegen-core@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@hey-api/codegen-core@npm:0.8.0"
+"@hey-api/codegen-core@npm:0.8.2":
+  version: 0.8.2
+  resolution: "@hey-api/codegen-core@npm:0.8.2"
   dependencies:
     "@hey-api/types": "npm:0.1.4"
     ansi-colors: "npm:4.1.3"
     c12: "npm:3.3.4"
     color-support: "npm:1.1.3"
-  checksum: 10/dc6dab2e6f8abf1ed7067226f6452f6b28ec50b8ae8fddab23df36a47fd94f312839002d212134b618bc893f75ce1e5e49f1d1cc8f46e225ae14d26ecf1ca593
+  checksum: 10/fa96be1a56b3caf0449c5c92bf7d3d76cecc28fbc84e0ad20bb827cf14271d1888570a8fb0d1cffe9449d01f4ec2e8e9de5034f63bde6d1fa256142ae9c87e43
   languageName: node
   linkType: hard
 
-"@hey-api/json-schema-ref-parser@npm:1.4.1":
-  version: 1.4.1
-  resolution: "@hey-api/json-schema-ref-parser@npm:1.4.1"
+"@hey-api/json-schema-ref-parser@npm:1.4.2":
+  version: 1.4.2
+  resolution: "@hey-api/json-schema-ref-parser@npm:1.4.2"
   dependencies:
     "@jsdevtools/ono": "npm:7.1.3"
     "@types/json-schema": "npm:7.0.15"
-    yaml: "npm:2.8.3"
-  checksum: 10/677be5dc6ab6c4680ac84e264c8afd2d37baac204871da3a98886143de1365f060bafd6372d8589aa2b7ea4bb747ef241201bd9305eacab17cb0ad54f9003541
+    js-yaml: "npm:4.1.1"
+  checksum: 10/9d8e7431961350cf38155d1df8e4aaa1bf491c6c9db1acf9c06a645270650752b220927f8581f21453ba79ed70ffad7955eca2b2e7a1253049233d8f0e316272
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:^0.96.1":
-  version: 0.96.1
-  resolution: "@hey-api/openapi-ts@npm:0.96.1"
+"@hey-api/openapi-ts@npm:^0.97.3":
+  version: 0.97.3
+  resolution: "@hey-api/openapi-ts@npm:0.97.3"
   dependencies:
-    "@hey-api/codegen-core": "npm:0.8.0"
-    "@hey-api/json-schema-ref-parser": "npm:1.4.1"
-    "@hey-api/shared": "npm:0.4.1"
+    "@hey-api/codegen-core": "npm:0.8.2"
+    "@hey-api/json-schema-ref-parser": "npm:1.4.2"
+    "@hey-api/shared": "npm:0.4.5"
     "@hey-api/spec-types": "npm:0.2.0"
     "@hey-api/types": "npm:0.1.4"
+    "@lukeed/ms": "npm:2.0.2"
     ansi-colors: "npm:4.1.3"
     color-support: "npm:1.1.3"
     commander: "npm:14.0.3"
@@ -773,24 +774,24 @@ __metadata:
   peerDependencies:
     typescript: ">=5.5.3 || >=6.0.0 || 6.0.1-rc"
   bin:
-    openapi-ts: bin/run.js
-  checksum: 10/c84ffe6a73df595233f6257e95ccc69f95d8a97434077ee73065b84f490cb9be5e3d19f7a18102c87889d642f88053174fa4b16c570ef789dd056053330290d5
+    openapi-ts: ./bin/run.js
+  checksum: 10/3c3194ed52b2d4f7884d77487b83012ac24cfc86e1d93e073340caf495b2eda7a108ebe8fb61d524344e6bc5a7547cd8ab9447b6aa9b59cbcfd3a77259f9548f
   languageName: node
   linkType: hard
 
-"@hey-api/shared@npm:0.4.1":
-  version: 0.4.1
-  resolution: "@hey-api/shared@npm:0.4.1"
+"@hey-api/shared@npm:0.4.5":
+  version: 0.4.5
+  resolution: "@hey-api/shared@npm:0.4.5"
   dependencies:
-    "@hey-api/codegen-core": "npm:0.8.0"
-    "@hey-api/json-schema-ref-parser": "npm:1.4.1"
+    "@hey-api/codegen-core": "npm:0.8.2"
+    "@hey-api/json-schema-ref-parser": "npm:1.4.2"
     "@hey-api/spec-types": "npm:0.2.0"
     "@hey-api/types": "npm:0.1.4"
     ansi-colors: "npm:4.1.3"
     cross-spawn: "npm:7.0.6"
     open: "npm:11.0.0"
     semver: "npm:7.7.4"
-  checksum: 10/cdf03cc3630b121109b3e41d902b02c1d672620e1e9b72bdf186f85d62b566e81e1de191efaddcd6ae3e493b8b560c5875d1c48a56f85922ae8a3dc2f6de4c0c
+  checksum: 10/c38e2bf17d0ad138a734b4c6e368a98fd97db4d7b30dccf7468e8144371cd09d1f23dae62102b0df182076b5014fae310f4023e06dcc744a45549e18232e792b
   languageName: node
   linkType: hard
 
@@ -916,6 +917,13 @@ __metadata:
   dependencies:
     "@braidai/lang": "npm:^1.0.0"
   checksum: 10/1197b99ec35a8b3adcb1246b68e21154d87c97c7b3caec6e2f6382153bae239a1567de8db25e005f5db1d315efdc1fe5ea61970f2a9b9f7c0ea5e4d04347d8e9
+  languageName: node
+  linkType: hard
+
+"@lukeed/ms@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@lukeed/ms@npm:2.0.2"
+  checksum: 10/6ae47ed3ebc857ffc0283cfe46129947209c770d0974eb86626138b6c194a760d08863ec593ec75a645aec133b3237b37af500739b030293e4d9a81130f4e2ae
   languageName: node
   linkType: hard
 
@@ -4493,6 +4501,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-yaml@npm:4.1.1":
+  version: 4.1.1
+  resolution: "js-yaml@npm:4.1.1"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10/a52d0519f0f4ef5b4adc1cde466cb54c50d56e2b4a983b9d5c9c0f2f99462047007a6274d7e95617a21d3c91fde3ee6115536ed70991cd645ba8521058b78f77
+  languageName: node
+  linkType: hard
+
 "js-yaml@npm:^4.1.0, js-yaml@npm:^4.1.1":
   version: 4.2.0
   resolution: "js-yaml@npm:4.2.0"
@@ -7349,7 +7368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:2.8.3, yaml@npm:^2.8.2":
+"yaml@npm:^2.8.2":
   version: 2.8.3
   resolution: "yaml@npm:2.8.3"
   bin:
