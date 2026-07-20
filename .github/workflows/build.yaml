@@ -12,7 +12,6 @@ jobs:
   polyglot-monorepo-stack:
     name: CI/CD
     uses: abinnovision/actions/.github/workflows/workflow.yaml@polyglot-monorepo-stack-v1
-    secrets: inherit
     with:
       enable-package-publishing: true
       enable-packages-registry-npm: true
