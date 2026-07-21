@@ -10,7 +10,8 @@
 		"hooks",
 		"sdk",
 		"smart-contracts",
-		"cel"
+		"cel",
+		"suspense"
 	],
 	"homepage": "https://github.com/abinnovision/evmquery-clients/tree/main/packages/react#readme",
 	"repository": {
@@ -82,7 +83,7 @@
 		"vitest": "^4.1.5"
 	},
 	"peerDependencies": {
-		"react": ">=18"
+		"react": ">=19"
 	},
 	"publishConfig": {
 		"access": "public",

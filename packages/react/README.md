@@ -14,7 +14,7 @@ Authoring, validating, and introspecting expressions is out of scope here. For t
 yarn add @evmquery/react @evmquery/sdk react
 ```
 
-`@evmquery/sdk` is a dependency; `react` (18+) is a peer dependency.
+`@evmquery/sdk` is a dependency; `react` (19+) is a peer dependency. React 19 is required because the Suspense hook uses the native `use()` API.
 
 ## Quick Start
 
@@ -91,6 +91,66 @@ const { data, refetch } = useEvmQuery(input, { enabled: false });
 ```
 
 Returns `EvmQueryResource<QueryExecuteResponseDto>`.
+
+### Suspense
+
+`useEvmQuerySuspense` executes a query and suspends the nearest `<Suspense>` boundary until it resolves. It requires **React 19** (it uses the native `use()` API, which has no React 18 polyfill).
+
+```tsx
+import { Component, Suspense } from "react";
+import { useEvmQuerySuspense } from "@evmquery/react";
+
+function QueryExample() {
+  const { data, refetch } = useEvmQuerySuspense({
+    chain: "ethereum",
+    schema: {
+      usdc: {
+        address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        abi: [], // Standard ERC20 ABI
+      },
+    },
+    expression: "usdc.balanceOf('0x...')",
+  });
+
+  return (
+    <>
+      <button onClick={() => refetch()}>Refresh</button>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </>
+  );
+}
+
+class ErrorBoundary extends Component {
+  state = { error: undefined };
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) return <div>Error: {this.state.error.message}</div>;
+    return this.props.children;
+  }
+}
+
+export function App() {
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <QueryExample />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+```
+
+Unlike `useEvmQuery`, `data` is always present (never `undefined`) since the component only renders once the query has resolved; a failed query (an `EvmQueryError` or a network failure) is thrown instead, to be caught by the nearest error boundary.
+
+The returned `refetch` runs only on the success path (after the component has rendered). To recover from a failed query, reset the error boundary so the component remounts and issues a fresh request; the returned `refetch` is not reachable while the boundary is showing its fallback.
+
+There is no shared cache: each hook instance memoizes its own promise, so re-rendering with the same input reuses it instead of issuing a new request, but nothing is deduplicated across components. Note that under React StrictMode in development, a mount may issue more than one request (and so consume credits more than once) before it settles; production builds issue a single request per mount.
+
+Cancellation is best-effort: aborting the in-flight request happens in a post-commit effect, so it only covers a superseded or unmounted request _after_ the component has committed at least once. The window between a component first suspending and that initial commit can't be cancelled from here, since `use()` gives it nothing to hook a cleanup into for a render that never commits.
 
 ### useEvmQueryClient
 

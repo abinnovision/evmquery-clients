@@ -8,3 +8,8 @@ export interface EvmQueryResource<T> {
 export interface EvmQueryHookOptions {
 	enabled?: boolean;
 }
+
+export interface EvmQuerySuspenseResource<T> {
+	data: T;
+	refetch: () => void;
+}

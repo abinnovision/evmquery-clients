@@ -839,7 +839,7 @@ __metadata:
     typescript: "npm:^6.0.3"
     vitest: "npm:^4.1.5"
   peerDependencies:
-    react: ">=18"
+    react: ">=19"
   languageName: unknown
   linkType: soft
 

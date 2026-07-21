@@ -3,9 +3,9 @@ import { createElement, useMemo } from "react";
 
 import { EvmQueryContext } from "./context";
 
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement, PropsWithChildren } from "react";
 
-export interface EvmQueryProviderProps {
+export interface EvmQueryProviderProps extends PropsWithChildren {
 	/**
 	 * API key sent as the `X-API-Key` header on authenticated endpoints.
 	 */
@@ -31,18 +31,18 @@ export interface EvmQueryProviderProps {
 	 * client is not recreated on every render.
 	 */
 	fetch?: typeof fetch;
-
-	children: ReactNode;
 }
 
 /**
  * Provides an `EvmQueryClient` instance to all descendant hooks via context.
  */
-export const EvmQueryProvider = (
-	props: EvmQueryProviderProps,
-): ReactElement => {
-	const { apiKey, baseUrl, headers, fetch: customFetch, children } = props;
-
+export const EvmQueryProvider = ({
+	apiKey,
+	baseUrl,
+	headers,
+	fetch: customFetch,
+	children,
+}: EvmQueryProviderProps): ReactElement => {
 	const client = useMemo(
 		() =>
 			createEvmQueryClient({
