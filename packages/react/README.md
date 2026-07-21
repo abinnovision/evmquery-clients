@@ -6,7 +6,7 @@ React hooks for the evmquery API, authenticated with a public API key.
 
 A read integration for frontends: you already have a written CEL expression, this reads its value with a hook. Zero-dependency, built on [`@evmquery/sdk`](../sdk). No TanStack Query or other query libraries required, just a hook that handles loading, error, and refetch state.
 
-Authoring, validating, and introspecting expressions is out of scope here. For that, or for any other imperative access to the API, use the escape-hatch `useEvmQueryClient()` (or `@evmquery/sdk` directly).
+Authoring, validating, and introspecting expressions is out of scope here. For that, or for any other imperative access to the API, use the escape-hatch `useEvmqueryClient()` (or `@evmquery/sdk` directly).
 
 ## Installation
 
@@ -18,21 +18,21 @@ yarn add @evmquery/react @evmquery/sdk react
 
 ## Quick Start
 
-Wrap your app in `<EvmQueryProvider>` with a public API key:
+Wrap your app in `<EvmqueryProvider>` with a public API key:
 
 ```tsx
-import { EvmQueryProvider, useEvmQuery } from "@evmquery/react";
+import { EvmqueryProvider, useEvmquery } from "@evmquery/react";
 
 export function App() {
   return (
-    <EvmQueryProvider apiKey="pk_...">
+    <EvmqueryProvider apiKey="pk_...">
       <MyComponent />
-    </EvmQueryProvider>
+    </EvmqueryProvider>
   );
 }
 
 function MyComponent() {
-  const { data, error, isLoading } = useEvmQuery({
+  const { data, error, isLoading } = useEvmquery({
     chain: "ethereum",
     schema: {
       /* ... */
@@ -51,15 +51,15 @@ Your API key should be a **public/publishable key** from https://app.evmquery.co
 
 ## Hooks
 
-### useEvmQuery
+### useEvmquery
 
 Executes a query against smart contracts and reads its result. Auto-fetches on mount and whenever the input expression changes.
 
 ```tsx
-import { useEvmQuery } from "@evmquery/react";
+import { useEvmquery } from "@evmquery/react";
 
 function QueryExample() {
-  const { data, error, isLoading, refetch } = useEvmQuery({
+  const { data, error, isLoading, refetch } = useEvmquery({
     chain: "ethereum",
     schema: {
       usdc: {
@@ -85,23 +85,23 @@ function QueryExample() {
 Executing a query consumes credits. Since this hook auto-fetches, gate it with `{ enabled: false }` where auto-running isn't desired (for example, until the user provides input), then trigger it manually via `refetch()`:
 
 ```tsx
-const { data, refetch } = useEvmQuery(input, { enabled: false });
+const { data, refetch } = useEvmquery(input, { enabled: false });
 
 <button onClick={() => refetch()}>Run query</button>;
 ```
 
-Returns `EvmQueryResource<QueryExecuteResponseDto>`.
+Returns `EvmqueryResource<QueryExecuteResponseDto>`.
 
 ### Suspense
 
-`useEvmQuerySuspense` executes a query and suspends the nearest `<Suspense>` boundary until it resolves. It requires **React 19** (it uses the native `use()` API, which has no React 18 polyfill).
+`useEvmquerySuspense` executes a query and suspends the nearest `<Suspense>` boundary until it resolves. It requires **React 19** (it uses the native `use()` API, which has no React 18 polyfill).
 
 ```tsx
 import { Component, Suspense } from "react";
-import { useEvmQuerySuspense } from "@evmquery/react";
+import { useEvmquerySuspense } from "@evmquery/react";
 
 function QueryExample() {
-  const { data, refetch } = useEvmQuerySuspense({
+  const { data, refetch } = useEvmquerySuspense({
     chain: "ethereum",
     schema: {
       usdc: {
@@ -144,7 +144,7 @@ export function App() {
 }
 ```
 
-Unlike `useEvmQuery`, `data` is always present (never `undefined`) since the component only renders once the query has resolved; a failed query (an `EvmQueryError` or a network failure) is thrown instead, to be caught by the nearest error boundary.
+Unlike `useEvmquery`, `data` is always present (never `undefined`) since the component only renders once the query has resolved; a failed query (an `EvmQueryError` or a network failure) is thrown instead, to be caught by the nearest error boundary.
 
 The returned `refetch` runs only on the success path (after the component has rendered). To recover from a failed query, reset the error boundary so the component remounts and issues a fresh request; the returned `refetch` is not reachable while the boundary is showing its fallback.
 
@@ -152,15 +152,15 @@ There is no shared cache: each hook instance memoizes its own promise, so re-ren
 
 Cancellation is best-effort: aborting the in-flight request happens in a post-commit effect, so it only covers a superseded or unmounted request _after_ the component has committed at least once. The window between a component first suspending and that initial commit can't be cancelled from here, since `use()` gives it nothing to hook a cleanup into for a render that never commits.
 
-### useEvmQueryClient
+### useEvmqueryClient
 
 Escape hatch returning the raw `EvmQueryClient` from `@evmquery/sdk` for imperative access to endpoints this package doesn't wrap in hooks, such as listing chains, checking usage, validating an expression, or describing a schema.
 
 ```tsx
-import { useEvmQueryClient } from "@evmquery/react";
+import { useEvmqueryClient } from "@evmquery/react";
 
 function ClientExample() {
-  const client = useEvmQueryClient();
+  const client = useEvmqueryClient();
 
   const handleClick = async () => {
     const { data } = await client.validate({
@@ -176,10 +176,10 @@ function ClientExample() {
 
 ## Options
 
-`useEvmQuery` accepts an optional `EvmQueryHookOptions` object:
+`useEvmquery` accepts an optional `EvmqueryHookOptions` object:
 
 ```tsx
-interface EvmQueryHookOptions {
+interface EvmqueryHookOptions {
   /**
    * Whether to run the query automatically. Defaults to `true`.
    */
@@ -190,7 +190,7 @@ interface EvmQueryHookOptions {
 ### Hook Return Type
 
 ```tsx
-interface EvmQueryResource<T> {
+interface EvmqueryResource<T> {
   /**
    * The query result. `undefined` while loading or if an error occurred.
    */
@@ -215,16 +215,16 @@ interface EvmQueryResource<T> {
 
 ## Provider
 
-Wrap your component tree in `<EvmQueryProvider>` to make hooks available.
+Wrap your component tree in `<EvmqueryProvider>` to make hooks available.
 
 ```tsx
-import { EvmQueryProvider } from "@evmquery/react";
+import { EvmqueryProvider } from "@evmquery/react";
 
 export function App() {
   return (
-    <EvmQueryProvider apiKey={process.env.REACT_APP_EVMQUERY_KEY}>
+    <EvmqueryProvider apiKey={process.env.REACT_APP_EVMQUERY_KEY}>
       <YourApp />
-    </EvmQueryProvider>
+    </EvmqueryProvider>
   );
 }
 ```
@@ -232,7 +232,7 @@ export function App() {
 ### Props
 
 ```tsx
-interface EvmQueryProviderProps {
+interface EvmqueryProviderProps {
   /**
    * API key sent as the `X-API-Key` header. A public/publishable key from
    * https://app.evmquery.com/settings/api-keys is safe for browser use.
@@ -273,9 +273,9 @@ const customFetch = useCallback(async (input, init) => {
 }, []);
 
 return (
-  <EvmQueryProvider apiKey={apiKey} headers={customHeaders} fetch={customFetch}>
+  <EvmqueryProvider apiKey={apiKey} headers={customHeaders} fetch={customFetch}>
     <App />
-  </EvmQueryProvider>
+  </EvmqueryProvider>
 );
 ```
 

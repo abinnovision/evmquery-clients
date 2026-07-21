@@ -1,13 +1,13 @@
-export { useEvmQuery } from "./hooks";
-export { EvmQueryProvider } from "./provider";
-export type { EvmQueryProviderProps } from "./provider";
+export { useEvmquery } from "./use-evmquery";
+export { EvmqueryProvider } from "./provider";
+export type { EvmqueryProviderProps } from "./provider";
 export type {
-	EvmQueryHookOptions,
-	EvmQueryResource,
-	EvmQuerySuspenseResource,
+	EvmqueryHookOptions,
+	EvmqueryResource,
+	EvmquerySuspenseResource,
 } from "./types";
-export { useEvmQueryClient } from "./use-evm-query-client";
-export { useEvmQuerySuspense } from "./use-evm-query-suspense";
+export { useEvmqueryClient } from "./use-evmquery-client";
+export { useEvmquerySuspense } from "./use-evmquery-suspense";
 
 export { EvmQueryError, isEvmQueryError } from "@evmquery/sdk";
 export type {

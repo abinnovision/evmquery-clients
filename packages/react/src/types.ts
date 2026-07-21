@@ -1,15 +1,15 @@
-export interface EvmQueryResource<T> {
+export interface EvmqueryResource<T> {
 	data: T | undefined;
 	error: Error | undefined;
 	isLoading: boolean;
 	refetch: () => void;
 }
 
-export interface EvmQueryHookOptions {
+export interface EvmqueryHookOptions {
 	enabled?: boolean;
 }
 
-export interface EvmQuerySuspenseResource<T> {
+export interface EvmquerySuspenseResource<T> {
 	data: T;
 	refetch: () => void;
 }

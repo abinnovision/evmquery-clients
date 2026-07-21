@@ -1,9 +1,9 @@
 import { use, useCallback, useEffect, useRef, useState } from "react";
 
 import { toQueryKey } from "./query-key";
-import { useEvmQueryClient } from "./use-evm-query-client";
+import { useEvmqueryClient } from "./use-evmquery-client";
 
-import type { EvmQuerySuspenseResource } from "./types";
+import type { EvmquerySuspenseResource } from "./types";
 import type {
 	EvmQueryClient,
 	QueryExecuteRequestDto,
@@ -28,10 +28,10 @@ interface QueryMemo<T> {
  * re-rendering with the same input reuses the same promise instead of
  * issuing a new request.
  */
-export const useEvmQuerySuspense = (
+export const useEvmquerySuspense = (
 	input: QueryExecuteRequestDto,
-): EvmQuerySuspenseResource<QueryExecuteResponseDto> => {
-	const client = useEvmQueryClient();
+): EvmquerySuspenseResource<QueryExecuteResponseDto> => {
+	const client = useEvmqueryClient();
 	const key = toQueryKey(input);
 	const [refetchToken, setRefetchToken] = useState(0);
 

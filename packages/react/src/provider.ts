@@ -1,11 +1,11 @@
 import { createEvmQueryClient } from "@evmquery/sdk";
 import { createElement, useMemo } from "react";
 
-import { EvmQueryContext } from "./context";
+import { EvmqueryContext } from "./context";
 
 import type { ReactElement, PropsWithChildren } from "react";
 
-export interface EvmQueryProviderProps extends PropsWithChildren {
+export interface EvmqueryProviderProps extends PropsWithChildren {
 	/**
 	 * API key sent as the `X-API-Key` header on authenticated endpoints.
 	 */
@@ -36,13 +36,13 @@ export interface EvmQueryProviderProps extends PropsWithChildren {
 /**
  * Provides an `EvmQueryClient` instance to all descendant hooks via context.
  */
-export const EvmQueryProvider = ({
+export const EvmqueryProvider = ({
 	apiKey,
 	baseUrl,
 	headers,
 	fetch: customFetch,
 	children,
-}: EvmQueryProviderProps): ReactElement => {
+}: EvmqueryProviderProps): ReactElement => {
 	const client = useMemo(
 		() =>
 			createEvmQueryClient({
@@ -54,5 +54,5 @@ export const EvmQueryProvider = ({
 		[apiKey, baseUrl, headers, customFetch],
 	);
 
-	return createElement(EvmQueryContext.Provider, { value: client }, children);
+	return createElement(EvmqueryContext.Provider, { value: client }, children);
 };

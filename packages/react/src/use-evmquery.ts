@@ -1,7 +1,7 @@
 import { useAsyncResource } from "./use-async-resource";
-import { useEvmQueryClient } from "./use-evm-query-client";
+import { useEvmqueryClient } from "./use-evmquery-client";
 
-import type { EvmQueryHookOptions, EvmQueryResource } from "./types";
+import type { EvmqueryHookOptions, EvmqueryResource } from "./types";
 import type {
 	QueryExecuteRequestDto,
 	QueryExecuteResponseDto,
@@ -12,11 +12,11 @@ import type {
  * Gate with `{ enabled: false }` if the query should not run automatically
  * (executing a query consumes credits); trigger it later via `refetch`.
  */
-export const useEvmQuery = (
+export const useEvmquery = (
 	input: QueryExecuteRequestDto,
-	options?: EvmQueryHookOptions,
-): EvmQueryResource<QueryExecuteResponseDto> => {
-	const client = useEvmQueryClient();
+	options?: EvmqueryHookOptions,
+): EvmqueryResource<QueryExecuteResponseDto> => {
+	const client = useEvmqueryClient();
 	const key = JSON.stringify(input);
 	const enabled = options?.enabled ?? true;
 

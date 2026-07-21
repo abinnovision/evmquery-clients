@@ -9,11 +9,11 @@ import {
 import { Component, Suspense } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { EvmQueryProvider } from "./provider";
-import { useEvmQueryClient } from "./use-evm-query-client";
-import { useEvmQuerySuspense } from "./use-evm-query-suspense";
+import { EvmqueryProvider } from "./provider";
+import { useEvmqueryClient } from "./use-evmquery-client";
+import { useEvmquerySuspense } from "./use-evmquery-suspense";
 
-import type { EvmQuerySuspenseResource } from "./types";
+import type { EvmquerySuspenseResource } from "./types";
 import type {
 	QueryExecuteRequestDto,
 	QueryExecuteResponseDto,
@@ -141,10 +141,10 @@ const Harness = ({
 }: {
 	input: QueryExecuteRequestDto;
 	onRender?: (
-		resource: EvmQuerySuspenseResource<QueryExecuteResponseDto>,
+		resource: EvmquerySuspenseResource<QueryExecuteResponseDto>,
 	) => void;
 }): ReactElement => {
-	const resource = useEvmQuerySuspense(input);
+	const resource = useEvmquerySuspense(input);
 	onRender?.(resource);
 
 	return <div data-testid="data">{JSON.stringify(resource.data)}</div>;
@@ -154,19 +154,19 @@ const tree = (
 	fetchMock: FetchMock,
 	input: QueryExecuteRequestDto,
 	onRender?: (
-		resource: EvmQuerySuspenseResource<QueryExecuteResponseDto>,
+		resource: EvmquerySuspenseResource<QueryExecuteResponseDto>,
 	) => void,
 ): ReactElement => (
-	<EvmQueryProvider fetch={fetchMock}>
+	<EvmqueryProvider fetch={fetchMock}>
 		<ErrorBoundary>
 			<Suspense fallback={<div data-testid="fallback">Loading...</div>}>
 				<Harness input={input} onRender={onRender} />
 			</Suspense>
 		</ErrorBoundary>
-	</EvmQueryProvider>
+	</EvmqueryProvider>
 );
 
-describe("useEvmQuerySuspense", () => {
+describe("useEvmquerySuspense", () => {
 	let fetchMock: FetchMock;
 
 	beforeEach(() => {
@@ -210,9 +210,9 @@ describe("useEvmQuerySuspense", () => {
 		);
 
 		const wrapper = ({ children }: { children: ReactNode }): ReactElement => (
-			<EvmQueryProvider fetch={fetchMock}>{children}</EvmQueryProvider>
+			<EvmqueryProvider fetch={fetchMock}>{children}</EvmqueryProvider>
 		);
-		const { result } = renderHook(() => useEvmQueryClient(), { wrapper });
+		const { result } = renderHook(() => useEvmqueryClient(), { wrapper });
 
 		const controller = new AbortController();
 		const rejection = result.current
@@ -230,9 +230,9 @@ describe("useEvmQuerySuspense", () => {
 		fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch"));
 
 		const wrapper = ({ children }: { children: ReactNode }): ReactElement => (
-			<EvmQueryProvider fetch={fetchMock}>{children}</EvmQueryProvider>
+			<EvmqueryProvider fetch={fetchMock}>{children}</EvmqueryProvider>
 		);
-		const { result } = renderHook(() => useEvmQueryClient(), { wrapper });
+		const { result } = renderHook(() => useEvmqueryClient(), { wrapper });
 
 		const controller = new AbortController();
 		const rejection = result.current
@@ -298,7 +298,7 @@ describe("useEvmQuerySuspense", () => {
 			Promise.resolve(jsonResponse(QUERY_RESPONSE)),
 		);
 
-		let latest: EvmQuerySuspenseResource<QueryExecuteResponseDto> | undefined;
+		let latest: EvmquerySuspenseResource<QueryExecuteResponseDto> | undefined;
 		await flush(() => {
 			render(
 				tree(fetchMock, QUERY_INPUT, (resource) => {

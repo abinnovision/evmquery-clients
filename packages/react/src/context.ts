@@ -3,7 +3,7 @@ import { createContext } from "react";
 import type { EvmQueryClient } from "@evmquery/sdk";
 
 /**
- * Holds the `EvmQueryClient` instance provided by `EvmQueryProvider`.
- * Not exported from the package root; consumers use `useEvmQueryClient`.
+ * Holds the `EvmQueryClient` instance provided by `EvmqueryProvider`.
+ * Not exported from the package root; consumers use `useEvmqueryClient`.
  */
-export const EvmQueryContext = createContext<EvmQueryClient | null>(null);
+export const EvmqueryContext = createContext<EvmQueryClient | null>(null);

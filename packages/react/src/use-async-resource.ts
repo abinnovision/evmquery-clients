@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { EvmQueryResource } from "./types";
+import type { EvmqueryResource } from "./types";
 
 const isAbortError = (err: unknown): boolean =>
 	(err instanceof DOMException && err.name === "AbortError") ||
@@ -18,7 +18,7 @@ export const useAsyncResource = <T>(
 	runner: (signal: AbortSignal) => Promise<T>,
 	deps: readonly unknown[],
 	options?: { enabled?: boolean },
-): EvmQueryResource<T> => {
+): EvmqueryResource<T> => {
 	const enabled = options?.enabled ?? true;
 
 	const [data, setData] = useState<T | undefined>(undefined);

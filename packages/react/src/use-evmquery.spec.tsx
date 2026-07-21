@@ -2,8 +2,8 @@ import { isEvmQueryError } from "@evmquery/sdk";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useEvmQuery } from "./hooks";
-import { EvmQueryProvider } from "./provider";
+import { EvmqueryProvider } from "./provider";
+import { useEvmquery } from "./use-evmquery";
 
 import type { QueryExecuteRequestDto } from "@evmquery/sdk";
 import type { ReactElement, ReactNode } from "react";
@@ -37,9 +37,9 @@ const createWrapper = (
 	apiKey?: string,
 ): ((props: { children: ReactNode }) => ReactElement) => {
 	const Wrapper = ({ children }: { children: ReactNode }): ReactElement => (
-		<EvmQueryProvider apiKey={apiKey} fetch={fetchMock}>
+		<EvmqueryProvider apiKey={apiKey} fetch={fetchMock}>
 			{children}
-		</EvmQueryProvider>
+		</EvmqueryProvider>
 	);
 
 	return Wrapper;
@@ -79,7 +79,7 @@ const QUERY_RESPONSE = {
 	credits: { consumed: 1 },
 };
 
-describe("useEvmQuery", () => {
+describe("useEvmquery", () => {
 	let fetchMock: FetchMock;
 
 	beforeEach(() => {
@@ -89,7 +89,7 @@ describe("useEvmQuery", () => {
 	it("auto-fetches on mount and posts the input to /query", async () => {
 		fetchMock.mockResolvedValueOnce(jsonResponse(QUERY_RESPONSE));
 
-		const { result } = renderHook(() => useEvmQuery(QUERY_INPUT), {
+		const { result } = renderHook(() => useEvmquery(QUERY_INPUT), {
 			wrapper: createWrapper(fetchMock),
 		});
 
@@ -110,7 +110,7 @@ describe("useEvmQuery", () => {
 		fetchMock.mockResolvedValue(jsonResponse(QUERY_RESPONSE));
 
 		const { rerender } = renderHook(
-			({ input }: { input: QueryExecuteRequestDto }) => useEvmQuery(input),
+			({ input }: { input: QueryExecuteRequestDto }) => useEvmquery(input),
 			{
 				wrapper: createWrapper(fetchMock),
 				initialProps: { input: QUERY_INPUT },
@@ -133,7 +133,7 @@ describe("useEvmQuery", () => {
 
 	it("does not fetch on mount when enabled is false", async () => {
 		const { result } = renderHook(
-			() => useEvmQuery(QUERY_INPUT, { enabled: false }),
+			() => useEvmquery(QUERY_INPUT, { enabled: false }),
 			{ wrapper: createWrapper(fetchMock) },
 		);
 
@@ -149,7 +149,7 @@ describe("useEvmQuery", () => {
 
 		const { result, rerender } = renderHook(
 			({ enabled }: { enabled: boolean }) =>
-				useEvmQuery(QUERY_INPUT, { enabled }),
+				useEvmquery(QUERY_INPUT, { enabled }),
 			{
 				wrapper: createWrapper(fetchMock),
 				initialProps: { enabled: false },
@@ -173,7 +173,7 @@ describe("useEvmQuery", () => {
 		fetchMock.mockResolvedValueOnce(jsonResponse(QUERY_RESPONSE));
 
 		const { result } = renderHook(
-			() => useEvmQuery(QUERY_INPUT, { enabled: false }),
+			() => useEvmquery(QUERY_INPUT, { enabled: false }),
 			{ wrapper: createWrapper(fetchMock) },
 		);
 
@@ -208,7 +208,7 @@ describe("error handling", () => {
 			}),
 		);
 
-		const { result } = renderHook(() => useEvmQuery(QUERY_INPUT), {
+		const { result } = renderHook(() => useEvmquery(QUERY_INPUT), {
 			wrapper: createWrapper(fetchMock),
 		});
 
@@ -223,7 +223,7 @@ describe("error handling", () => {
 	it("surfaces a network failure (fetch rejection) as an error", async () => {
 		fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch"));
 
-		const { result } = renderHook(() => useEvmQuery(QUERY_INPUT), {
+		const { result } = renderHook(() => useEvmquery(QUERY_INPUT), {
 			wrapper: createWrapper(fetchMock),
 		});
 
@@ -246,7 +246,7 @@ describe("auth header scoping", () => {
 	it("sends x-api-key on the /query request", async () => {
 		fetchMock.mockResolvedValueOnce(jsonResponse(QUERY_RESPONSE));
 
-		const { result } = renderHook(() => useEvmQuery(QUERY_INPUT), {
+		const { result } = renderHook(() => useEvmquery(QUERY_INPUT), {
 			wrapper: createWrapper(fetchMock, "pk_test"),
 		});
 
@@ -266,18 +266,18 @@ describe("client identity changes", () => {
 		fetchMock = vi.fn<typeof fetch>();
 	});
 
-	it("refetches an auto-fetching useEvmQuery when the provider creates a new client", async () => {
+	it("refetches an auto-fetching useEvmquery when the provider creates a new client", async () => {
 		fetchMock.mockResolvedValueOnce(jsonResponse(QUERY_RESPONSE));
 		fetchMock.mockResolvedValueOnce(jsonResponse(QUERY_RESPONSE));
 
 		let apiKey = "pk_a";
 		const Wrapper = ({ children }: { children: ReactNode }): ReactElement => (
-			<EvmQueryProvider apiKey={apiKey} fetch={fetchMock}>
+			<EvmqueryProvider apiKey={apiKey} fetch={fetchMock}>
 				{children}
-			</EvmQueryProvider>
+			</EvmqueryProvider>
 		);
 
-		const { rerender } = renderHook(() => useEvmQuery(QUERY_INPUT), {
+		const { rerender } = renderHook(() => useEvmquery(QUERY_INPUT), {
 			wrapper: Wrapper,
 		});
 
@@ -293,16 +293,16 @@ describe("client identity changes", () => {
 		});
 	});
 
-	it("does not auto-fire the lazy useEvmQuery when the client changes while disabled", async () => {
+	it("does not auto-fire the lazy useEvmquery when the client changes while disabled", async () => {
 		let apiKey = "pk_a";
 		const Wrapper = ({ children }: { children: ReactNode }): ReactElement => (
-			<EvmQueryProvider apiKey={apiKey} fetch={fetchMock}>
+			<EvmqueryProvider apiKey={apiKey} fetch={fetchMock}>
 				{children}
-			</EvmQueryProvider>
+			</EvmqueryProvider>
 		);
 
 		const { rerender } = renderHook(
-			() => useEvmQuery(QUERY_INPUT, { enabled: false }),
+			() => useEvmquery(QUERY_INPUT, { enabled: false }),
 			{ wrapper: Wrapper },
 		);
 
@@ -331,7 +331,7 @@ describe("abort behavior", () => {
 		fetchMock.mockImplementationOnce(() => second.promise);
 
 		const { result, rerender } = renderHook(
-			({ input }: { input: QueryExecuteRequestDto }) => useEvmQuery(input),
+			({ input }: { input: QueryExecuteRequestDto }) => useEvmquery(input),
 			{
 				wrapper: createWrapper(fetchMock),
 				initialProps: { input: QUERY_INPUT },
@@ -375,7 +375,7 @@ describe("abort behavior", () => {
 		const pending = deferred<Response>();
 		fetchMock.mockImplementationOnce(() => pending.promise);
 
-		const { unmount } = renderHook(() => useEvmQuery(QUERY_INPUT), {
+		const { unmount } = renderHook(() => useEvmquery(QUERY_INPUT), {
 			wrapper: createWrapper(fetchMock),
 		});
 
@@ -402,7 +402,7 @@ describe("abort behavior", () => {
 
 		const { result, rerender } = renderHook(
 			({ enabled }: { enabled: boolean }) =>
-				useEvmQuery(QUERY_INPUT, { enabled }),
+				useEvmquery(QUERY_INPUT, { enabled }),
 			{
 				wrapper: createWrapper(fetchMock),
 				initialProps: { enabled: true },
