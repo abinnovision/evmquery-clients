@@ -75,7 +75,7 @@ describe("createEvmQueryClient", () => {
 			const request = captureRequest(fetchMock);
 			expect(request.method).toBe("POST");
 			expect(request.url).toBe("https://api.evmquery.com/api/v1/query");
-			expect(request.headers.get("authorization")).toBe("Bearer test-key");
+			expect(request.headers.get("x-api-key")).toBe("test-key");
 			expect(request.headers.get("content-type")).toBe("application/json");
 			expect(await request.clone().json()).toEqual(body);
 			expect(data?.result).toEqual({ value: "1000000", type: "sol_int" });
@@ -181,28 +181,43 @@ describe("createEvmQueryClient", () => {
 		});
 
 		it("merges custom headers and apiKey into every request", async () => {
-			fetchMock.mockResolvedValueOnce(jsonResponse({ chains: [] }));
+			fetchMock.mockResolvedValueOnce(
+				jsonResponse({ creditsUsed: 0, creditsRemaining: 100 }),
+			);
 			const client = createEvmQueryClient({
 				apiKey: "secret-token",
 				fetch: fetchMock,
 				headers: { "X-Trace-Id": "trace-123" },
 			});
 
-			await client.listChains();
+			await client.usage();
 
 			const request = captureRequest(fetchMock);
-			expect(request.headers.get("authorization")).toBe("Bearer secret-token");
+			expect(request.headers.get("x-api-key")).toBe("secret-token");
 			expect(request.headers.get("x-trace-id")).toBe("trace-123");
 		});
 
-		it("does not set an Authorization header when apiKey is absent", async () => {
+		it("does not set an X-API-Key header when apiKey is absent", async () => {
 			fetchMock.mockResolvedValueOnce(jsonResponse({ chains: [] }));
 			const client = createEvmQueryClient({ fetch: fetchMock });
 
 			await client.listChains();
 
 			const request = captureRequest(fetchMock);
-			expect(request.headers.get("authorization")).toBeNull();
+			expect(request.headers.get("x-api-key")).toBeNull();
+		});
+
+		it("does not send the X-API-Key header to public endpoints", async () => {
+			fetchMock.mockResolvedValueOnce(jsonResponse({ chains: [] }));
+			const client = createEvmQueryClient({
+				apiKey: "test-key",
+				fetch: fetchMock,
+			});
+
+			await client.listChains();
+
+			const request = captureRequest(fetchMock);
+			expect(request.headers.get("x-api-key")).toBeNull();
 		});
 	});
 
