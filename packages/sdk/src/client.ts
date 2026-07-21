@@ -18,7 +18,7 @@ type SdkCallable = (options: Record<string, unknown>) => unknown;
 
 export interface EvmQueryClientOptions {
 	/**
-	 * Bearer token sent as the `Authorization` header.
+	 * API key sent as the `X-API-Key` header on authenticated endpoints.
 	 */
 	apiKey?: string;
 
@@ -53,10 +53,8 @@ export const createEvmQueryClient = (
 	const client = createClient({
 		baseUrl: options.baseUrl ?? DEFAULT_BASE_URL,
 		...(options.fetch ? { fetch: options.fetch } : {}),
-		headers: {
-			...(options.apiKey ? { authorization: `Bearer ${options.apiKey}` } : {}),
-			...options.headers,
-		},
+		...(options.apiKey ? { auth: options.apiKey } : {}),
+		headers: { ...options.headers },
 	});
 
 	// Add a response interceptor to throw EvmQueryError on non-OK responses
