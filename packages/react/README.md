@@ -104,7 +104,7 @@ Returns `EvmqueryResource<QueryExecuteResponseDto>`.
 
 `useEvmquerySuspense` executes a query and suspends the nearest `<Suspense>`
 boundary until it resolves. It requires **React 19** (it uses the native `use()`
-API, which has no React 18 polyfill).
+API).
 
 ```tsx
 import { Component, Suspense } from "react";
@@ -129,26 +129,11 @@ function QueryExample() {
   );
 }
 
-class ErrorBoundary extends Component {
-  state = { error: undefined };
-
-  static getDerivedStateFromError(error) {
-    return { error };
-  }
-
-  render() {
-    if (this.state.error) return <div>Error: {this.state.error.message}</div>;
-    return this.props.children;
-  }
-}
-
 export function App() {
   return (
-    <ErrorBoundary>
-      <Suspense fallback={<div>Loading...</div>}>
-        <QueryExample />
-      </Suspense>
-    </ErrorBoundary>
+    <Suspense fallback={<div>Loading...</div>}>
+      <QueryExample />
+    </Suspense>
   );
 }
 ```
@@ -162,70 +147,6 @@ The returned `refetch` runs only on the success path (after the component has
 rendered). To recover from a failed query, reset the error boundary so the
 component remounts and issues a fresh request; the returned `refetch` is not
 reachable while the boundary is showing its fallback.
-
-### useEvmqueryClient
-
-Escape hatch returning the raw `EvmQueryClient` from `@evmquery/sdk` for
-imperative access to endpoints this package doesn't wrap in hooks, such as
-listing chains, checking usage, validating an expression, or describing a
-schema.
-
-```tsx
-import { useEvmqueryClient } from "@evmquery/react";
-
-function ClientExample() {
-  const client = useEvmqueryClient();
-
-  const handleClick = async () => {
-    const { data } = await client.validate({
-      body: {
-        /* ... */
-      },
-    });
-  };
-
-  return <button onClick={handleClick}>Validate</button>;
-}
-```
-
-## Options
-
-`useEvmquery` accepts an optional `EvmqueryHookOptions` object:
-
-```tsx
-interface EvmqueryHookOptions {
-  /**
-   * Whether to run the query automatically. Defaults to `true`.
-   */
-  enabled?: boolean;
-}
-```
-
-### Hook Return Type
-
-```tsx
-interface EvmqueryResource<T> {
-  /**
-   * The query result. `undefined` while loading or if an error occurred.
-   */
-  data: T | undefined;
-
-  /**
-   * Error thrown by the API or during fetch. `undefined` if no error.
-   */
-  error: Error | undefined;
-
-  /**
-   * `true` while the query is in flight.
-   */
-  isLoading: boolean;
-
-  /**
-   * Manually trigger the query.
-   */
-  refetch: () => void;
-}
-```
 
 ## Provider
 
