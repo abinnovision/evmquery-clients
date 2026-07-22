@@ -21,46 +21,7 @@ export type ChainsResponseDto = {
 	}>;
 };
 
-export type DashboardSummaryResponseDto = {
-	/**
-	 * Whether the organization has ever run a query (drives the dashboard empty state)
-	 */
-	hasQueries: boolean;
-	/**
-	 * Query count over the last 30 days
-	 */
-	queries30d: number;
-	/**
-	 * Ratio of successful queries over the last 30 days (0–1)
-	 */
-	successRate: number;
-	/**
-	 * 30 zero-filled daily buckets of credits consumed, ordered from oldest to newest
-	 */
-	dailyCreditUsage: Array<{
-		/**
-		 * Bucket date in ISO 8601 (YYYY-MM-DD), UTC
-		 */
-		date: string;
-		/**
-		 * Credits consumed on this day
-		 */
-		credits: number;
-	}>;
-};
-
-export type PosthogIdentityHashResponseDto = {
-	/**
-	 * The authenticated user's distinct ID. Pass this to `posthog.setIdentity(distinctId, identityHash)`.
-	 */
-	distinctId: string;
-	/**
-	 * HMAC-SHA256 of `distinctId` signed with the PostHog secret API token. Required by the support widget for verified identity.
-	 */
-	identityHash: string;
-};
-
-export type QuerySchemaInputDto = {
+export type QueryExecuteRequestDtoQuerySchemaInputDto = {
 	/**
 	 * Named contract definitions
 	 */
@@ -99,7 +60,7 @@ export type QueryExecuteRequestDto = {
 	 * Query expression to evaluate
 	 */
 	expression: string;
-	schema: QuerySchemaInputDto;
+	schema: QueryExecuteRequestDtoQuerySchemaInputDto;
 	/**
 	 * Runtime context variables
 	 */
@@ -151,11 +112,41 @@ export type QueryExecuteResponseDto = {
 		 */
 		latencyMs: number;
 	};
-	credits: {
+	units: {
 		/**
-		 * Credits consumed by this query
+		 * Compute-weighted units consumed by this query
 		 */
 		consumed: number;
+	};
+};
+
+export type QueryValidateRequestDtoQuerySchemaInputDto = {
+	/**
+	 * Named contract definitions
+	 */
+	contracts: {
+		[key: string]: {
+			/**
+			 * Contract address
+			 */
+			address: string;
+		};
+	};
+	/**
+	 * Context variable type declarations
+	 */
+	context?: {
+		[key: string]:
+			| "sol_int"
+			| "sol_address"
+			| "bool"
+			| "string"
+			| "bytes"
+			| "list<sol_int>"
+			| "list<sol_address>"
+			| "list<bool>"
+			| "list<string>"
+			| "list<bytes>";
 	};
 };
 
@@ -164,7 +155,7 @@ export type QueryValidateRequestDto = {
 	 * Query expression to validate
 	 */
 	expression: string;
-	schema: QuerySchemaInputDto;
+	schema: QueryValidateRequestDtoQuerySchemaInputDto;
 	/**
 	 * Chain Identifier
 	 */
@@ -181,13 +172,43 @@ export type QueryValidateResponseDto = {
 	 */
 	type: string | null;
 	/**
-	 * Estimated credits this expression will consume
+	 * Estimated units this expression will consume
 	 */
-	estimatedCredits?: number;
+	estimatedUnits?: number;
+};
+
+export type QueryDescribeRequestDtoQuerySchemaInputDto = {
+	/**
+	 * Named contract definitions
+	 */
+	contracts: {
+		[key: string]: {
+			/**
+			 * Contract address
+			 */
+			address: string;
+		};
+	};
+	/**
+	 * Context variable type declarations
+	 */
+	context?: {
+		[key: string]:
+			| "sol_int"
+			| "sol_address"
+			| "bool"
+			| "string"
+			| "bytes"
+			| "list<sol_int>"
+			| "list<sol_address>"
+			| "list<bool>"
+			| "list<string>"
+			| "list<bytes>";
+	};
 };
 
 export type QueryDescribeRequestDto = {
-	schema: QuerySchemaInputDto;
+	schema: QueryDescribeRequestDtoQuerySchemaInputDto;
 	/**
 	 * Chain identifier
 	 */
@@ -200,32 +221,32 @@ export type QueryDescribeRequestDto = {
 export type QueryDescribeResponseDto = unknown;
 
 export type UsageStatsResponseDto = {
-	credits: {
+	/**
+	 * Rolling 1-minute burst window
+	 */
+	minute: {
 		/**
-		 * Credits consumed this billing period
+		 * Compute-weighted units consumed in this window, rounded to the nearest whole unit
 		 */
 		used: number;
 		/**
-		 * Credit allowance granted per billing period
+		 * Unit cap for this window
 		 */
-		allowance: number;
-		/**
-		 * Credits remaining this billing period
-		 */
-		remaining: number;
+		limit: number;
 	};
 	/**
-	 * Current subscription tier
+	 * Rolling 1-hour usage window
 	 */
-	tier: string;
-	/**
-	 * Billing period start date (ISO 8601 date)
-	 */
-	periodStart: string;
-	/**
-	 * Billing period end date (ISO 8601 date)
-	 */
-	periodEnd: string;
+	hour: {
+		/**
+		 * Compute-weighted units consumed in this window, rounded to the nearest whole unit
+		 */
+		used: number;
+		/**
+		 * Unit cap for this window
+		 */
+		limit: number;
+	};
 };
 
 export type ChainsControllerListChainsData = {
@@ -258,6 +279,10 @@ export type QueryControllerExecuteQueryErrors = {
 	 */
 	400: unknown;
 	/**
+	 * The organization's subscription does not allow API access. Upgrade the plan or update billing details.
+	 */
+	402: unknown;
+	/**
 	 * The organization has exceeded its rate limit. Retry after the window resets.
 	 */
 	429: unknown;
@@ -265,7 +290,7 @@ export type QueryControllerExecuteQueryErrors = {
 
 export type QueryControllerExecuteQueryResponses = {
 	/**
-	 * Successful execution. The response contains the typed `result`, on-chain `meta` (block number, total calls, total rounds), `performance` metrics, and the `credits` consumed by this call.
+	 * Successful execution. The response contains the typed `result`, on-chain `meta` (block number, total calls, total rounds), `performance` metrics, and the `units` consumed by this call.
 	 */
 	200: QueryExecuteResponseDto;
 };
@@ -289,7 +314,7 @@ export type QueryControllerValidateExpressionErrors = {
 
 export type QueryControllerValidateExpressionResponses = {
 	/**
-	 * The expression was parsed and type-checked. `valid` reflects whether the expression is well-formed, `type` is the inferred result type, and `estimatedCredits` is an upper bound on the credits an execution would consume.
+	 * The expression was parsed and type-checked. `valid` reflects whether the expression is well-formed, `type` is the inferred result type, and `estimatedUnits` is an upper bound on the units an execution would consume.
 	 */
 	200: QueryValidateResponseDto;
 };
@@ -330,7 +355,7 @@ export type UsageControllerGetUsageStatsData = {
 
 export type UsageControllerGetUsageStatsResponses = {
 	/**
-	 * The organization's credit snapshot: credits used/remaining, tier, and the active billing window (`periodStart`, `periodEnd` as ISO dates).
+	 * The organization's unit usage snapshot: `minute`/`hour`, each with `used` and `limit`.
 	 */
 	200: UsageStatsResponseDto;
 };

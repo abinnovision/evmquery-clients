@@ -55,7 +55,7 @@ export const chainsControllerListChains = <
 /**
  * Execute a query against EVM smart contracts
  *
- * Evaluates a query expression against the contracts defined in `schema` on the given `chain`. The engine automatically batches on-chain reads into multicall rounds and returns a typed `result` along with execution metadata (block number, call count), latency, and credits consumed. Validate expressions with [`POST /query/validate`](#tag/query/POST/query/validate) before invoking this endpoint to catch type errors without spending credits.
+ * Evaluates a query expression against the contracts defined in `schema` on the given `chain`. The engine automatically batches on-chain reads into multicall rounds and returns a typed `result` along with execution metadata (block number, call count), latency, and units consumed. Validate expressions with [`POST /query/validate`](#tag/query/POST/query/validate) before invoking this endpoint to catch type errors without spending units.
  */
 export const queryControllerExecuteQuery = <
 	ThrowOnError extends boolean = false,
@@ -79,7 +79,7 @@ export const queryControllerExecuteQuery = <
 /**
  * Validate a query expression without executing it
  *
- * Type-checks a query expression against the provided schema and returns its inferred result type plus an `estimatedCredits` cost. Use this endpoint in editors and pre-flight checks to surface errors early without consuming credits for an actual on-chain read.
+ * Type-checks a query expression against the provided schema and returns its inferred result type plus an `estimatedUnits` cost. Use this endpoint in editors and pre-flight checks to surface errors early without consuming units for an actual on-chain read.
  */
 export const queryControllerValidateExpression = <
 	ThrowOnError extends boolean = false,
@@ -125,9 +125,9 @@ export const queryControllerDescribeSchema = <
 	});
 
 /**
- * Get credit usage stats for the authenticated organization
+ * Get unit usage stats for the authenticated organization
  *
- * Returns the current credit balance, subscription `tier`, and the start/end dates of the active billing period for the organization associated with the request. Use this endpoint to drive in-app usage meters or to gate behaviour when credits run low.
+ * Returns the current compute-weighted unit usage for the rolling minute and hour windows. Use this endpoint to drive in-app usage meters or to gate behaviour as the organization approaches its rate limits.
  */
 export const usageControllerGetUsageStats = <
 	ThrowOnError extends boolean = false,
