@@ -1,5 +1,5 @@
 {
 	"packages/n8n-nodes-evmquery": "0.2.0",
-	"packages/react": "0.1.0",
+	"packages/react": "1.0.0",
 	"packages/sdk": "2.0.0"
 }
