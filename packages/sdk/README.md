@@ -36,7 +36,7 @@ The client exposes a curated set of typed methods:
 | `query()`      | `POST /query`          | Execute a query against contracts on a chain.       |
 | `validate()`   | `POST /query/validate` | Validate an expression without executing it.        |
 | `describe()`   | `POST /query/describe` | Resolve a schema into contract methods and context. |
-| `usage()`      | `GET /usage`           | Credit usage and billing-period snapshot.           |
+| `usage()`      | `GET /usage`           | Rolling unit usage for the minute and hour windows. |
 
 Errors are thrown as `EvmqueryError` with `status`, `statusText`, and parsed `body`.
 
@@ -44,7 +44,7 @@ Errors are thrown as `EvmqueryError` with `status`, `statusText`, and parsed `bo
 
 | Option    | Type                     | Default                           | Description                                                 |
 | --------- | ------------------------ | --------------------------------- | ----------------------------------------------------------- |
-| `apiKey`  | `string`                 | —                                 | Bearer token sent as the `Authorization` header.            |
+| `apiKey`  | `string`                 | —                                 | API key sent as the `X-API-Key` header.                     |
 | `baseUrl` | `string`                 | `https://api.evmquery.com/api/v1` | Override the API base URL.                                  |
 | `fetch`   | `typeof fetch`           | platform default                  | Custom fetch implementation (proxies, retry middleware, …). |
 | `headers` | `Record<string, string>` | —                                 | Additional headers merged into every request.               |
