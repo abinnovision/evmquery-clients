@@ -1,4 +1,4 @@
-import { isEvmQueryError } from "@evmquery/sdk";
+import { isEvmqueryError } from "@evmquery/sdk";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -199,7 +199,7 @@ describe("error handling", () => {
 		fetchMock = vi.fn<typeof fetch>();
 	});
 
-	it("surfaces an EvmQueryError when the response is not OK", async () => {
+	it("surfaces an EvmqueryError when the response is not OK", async () => {
 		fetchMock.mockResolvedValueOnce(
 			new Response(JSON.stringify({ message: "invalid request" }), {
 				status: 400,
@@ -216,7 +216,7 @@ describe("error handling", () => {
 			expect(result.current.isLoading).toBe(false);
 		});
 
-		expect(isEvmQueryError(result.current.error)).toBe(true);
+		expect(isEvmqueryError(result.current.error)).toBe(true);
 		expect(result.current.data).toBeUndefined();
 	});
 

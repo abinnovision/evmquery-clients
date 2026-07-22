@@ -1,4 +1,4 @@
-import { isEvmQueryError } from "@evmquery/sdk";
+import { isEvmqueryError } from "@evmquery/sdk";
 import {
 	act,
 	cleanup,
@@ -200,7 +200,7 @@ describe("useEvmquerySuspense", () => {
 		);
 	});
 
-	it("rejects with an EvmQueryError for a non-OK response (surfaced by use() to the error boundary)", async () => {
+	it("rejects with an EvmqueryError for a non-OK response (surfaced by use() to the error boundary)", async () => {
 		fetchMock.mockResolvedValueOnce(
 			new Response(JSON.stringify({ message: "invalid request" }), {
 				status: 400,
@@ -223,7 +223,7 @@ describe("useEvmquerySuspense", () => {
 			})
 			.then((response) => response.data);
 
-		await expect(rejection).rejects.toSatisfy(isEvmQueryError);
+		await expect(rejection).rejects.toSatisfy(isEvmqueryError);
 	});
 
 	it("rejects with the network error for a fetch failure (surfaced by use() to the error boundary)", async () => {

@@ -2,13 +2,13 @@ import { useContext } from "react";
 
 import { EvmqueryContext } from "./context";
 
-import type { EvmQueryClient } from "@evmquery/sdk";
+import type { EvmqueryClient } from "@evmquery/sdk";
 
 /**
- * Returns the `EvmQueryClient` provided by the nearest `EvmqueryProvider`.
+ * Returns the `EvmqueryClient` provided by the nearest `EvmqueryProvider`.
  * Throws if no provider is present in the tree.
  */
-export const useEvmqueryClient = (): EvmQueryClient => {
+export const useEvmqueryClient = (): EvmqueryClient => {
 	const client = useContext(EvmqueryContext);
 
 	if (!client) {

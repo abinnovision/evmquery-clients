@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createEvmQueryClient, EvmQueryError, isEvmQueryError } from "./index";
+import { createEvmqueryClient, EvmqueryError, isEvmqueryError } from "./index";
 
 type FetchMock = ReturnType<typeof vi.fn<typeof fetch>>;
 
@@ -19,7 +19,7 @@ const captureRequest = (fetchMock: FetchMock): Request => {
 	return arg as Request;
 };
 
-describe("createEvmQueryClient", () => {
+describe("createEvmqueryClient", () => {
 	let fetchMock: FetchMock;
 
 	beforeEach(() => {
@@ -33,7 +33,7 @@ describe("createEvmQueryClient", () => {
 					chains: [{ id: "ethereum", evmChainId: 1, name: "Ethereum" }],
 				}),
 			);
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			const { data } = await client.listChains();
 
@@ -56,7 +56,7 @@ describe("createEvmQueryClient", () => {
 					credits: { consumed: 1 },
 				}),
 			);
-			const client = createEvmQueryClient({
+			const client = createEvmqueryClient({
 				apiKey: "test-key",
 				fetch: fetchMock,
 			});
@@ -92,7 +92,7 @@ describe("createEvmQueryClient", () => {
 					estimatedCredits: 1,
 				}),
 			);
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			const { data } = await client.validate({
 				body: {
@@ -123,7 +123,7 @@ describe("createEvmQueryClient", () => {
 			fetchMock.mockResolvedValueOnce(
 				jsonResponse({ contracts: { usdc: { methods: [] } } }),
 			);
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			const { data } = await client.describe({
 				body: {
@@ -154,7 +154,7 @@ describe("createEvmQueryClient", () => {
 					periodEnd: "2026-04-30",
 				}),
 			);
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			const { data } = await client.usage();
 
@@ -169,7 +169,7 @@ describe("createEvmQueryClient", () => {
 	describe("client options", () => {
 		it("honors the baseUrl override", async () => {
 			fetchMock.mockResolvedValueOnce(jsonResponse({ chains: [] }));
-			const client = createEvmQueryClient({
+			const client = createEvmqueryClient({
 				baseUrl: "https://staging.evmquery.local/api/v1",
 				fetch: fetchMock,
 			});
@@ -184,7 +184,7 @@ describe("createEvmQueryClient", () => {
 			fetchMock.mockResolvedValueOnce(
 				jsonResponse({ creditsUsed: 0, creditsRemaining: 100 }),
 			);
-			const client = createEvmQueryClient({
+			const client = createEvmqueryClient({
 				apiKey: "secret-token",
 				fetch: fetchMock,
 				headers: { "X-Trace-Id": "trace-123" },
@@ -199,7 +199,7 @@ describe("createEvmQueryClient", () => {
 
 		it("does not set an X-API-Key header when apiKey is absent", async () => {
 			fetchMock.mockResolvedValueOnce(jsonResponse({ chains: [] }));
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			await client.listChains();
 
@@ -209,7 +209,7 @@ describe("createEvmQueryClient", () => {
 
 		it("does not send the X-API-Key header to public endpoints", async () => {
 			fetchMock.mockResolvedValueOnce(jsonResponse({ chains: [] }));
-			const client = createEvmQueryClient({
+			const client = createEvmqueryClient({
 				apiKey: "test-key",
 				fetch: fetchMock,
 			});
@@ -222,7 +222,7 @@ describe("createEvmQueryClient", () => {
 	});
 
 	describe("error handling", () => {
-		it("throws EvmQueryError with the JSON body on non-OK responses", async () => {
+		it("throws EvmqueryError with the JSON body on non-OK responses", async () => {
 			fetchMock.mockResolvedValueOnce(
 				new Response(
 					JSON.stringify({ message: "invalid expression", code: "E_PARSE" }),
@@ -233,7 +233,7 @@ describe("createEvmQueryClient", () => {
 					},
 				),
 			);
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			const promise = client.query({
 				body: {
@@ -243,7 +243,7 @@ describe("createEvmQueryClient", () => {
 				},
 			});
 
-			await expect(promise).rejects.toBeInstanceOf(EvmQueryError);
+			await expect(promise).rejects.toBeInstanceOf(EvmqueryError);
 			await expect(promise).rejects.toMatchObject({
 				status: 400,
 				statusText: "Bad Request",
@@ -258,7 +258,7 @@ describe("createEvmQueryClient", () => {
 					statusText: "Too Many Requests",
 				}),
 			);
-			const client = createEvmQueryClient({ fetch: fetchMock });
+			const client = createEvmqueryClient({ fetch: fetchMock });
 
 			const error: unknown = await client
 				.query({
@@ -269,13 +269,13 @@ describe("createEvmQueryClient", () => {
 					},
 				})
 				.then(
-					() => new Error("expected EvmQueryError to be thrown"),
+					() => new Error("expected EvmqueryError to be thrown"),
 					(reason: unknown) => reason,
 				);
 
-			expect(isEvmQueryError(error)).toBe(true);
-			expect((error as EvmQueryError).status).toBe(429);
-			expect((error as EvmQueryError).body).toBe("rate limited");
+			expect(isEvmqueryError(error)).toBe(true);
+			expect((error as EvmqueryError).status).toBe(429);
+			expect((error as EvmqueryError).body).toBe("rate limited");
 		});
 	});
 });

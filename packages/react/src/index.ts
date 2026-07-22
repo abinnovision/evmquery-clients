@@ -4,9 +4,9 @@ export * from "./use-evmquery-suspense";
 export * from "./provider";
 export * from "./types";
 
-export { EvmQueryError, isEvmQueryError } from "@evmquery/sdk";
+export { EvmqueryError, isEvmqueryError } from "@evmquery/sdk";
 export type {
-	EvmQueryClient,
+	EvmqueryClient,
 	QueryExecuteRequestDto,
 	QueryExecuteResponseDto,
 } from "@evmquery/sdk";
