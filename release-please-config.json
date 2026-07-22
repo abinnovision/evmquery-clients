@@ -5,6 +5,7 @@
 	"release-type": "node",
 	"packages": {
 		"packages/n8n-nodes-evmquery": {},
+		"packages/react": {},
 		"packages/sdk": {}
 	},
 	"separate-pull-requests": true
