@@ -53,7 +53,7 @@ describe("createEvmqueryClient", () => {
 					result: { value: "1000000", type: "sol_int" },
 					meta: { blockNumber: "19000000", totalCalls: 1, totalRounds: 1 },
 					performance: { latencyMs: 42 },
-					credits: { consumed: 1 },
+					units: { consumed: 1 },
 				}),
 			);
 			const client = createEvmqueryClient({
@@ -79,7 +79,7 @@ describe("createEvmqueryClient", () => {
 			expect(request.headers.get("content-type")).toBe("application/json");
 			expect(await request.clone().json()).toEqual(body);
 			expect(data?.result).toEqual({ value: "1000000", type: "sol_int" });
-			expect(data?.credits.consumed).toBe(1);
+			expect(data?.units.consumed).toBe(1);
 		});
 	});
 
@@ -89,7 +89,7 @@ describe("createEvmqueryClient", () => {
 				jsonResponse({
 					valid: true,
 					type: "sol_int",
-					estimatedCredits: 1,
+					estimatedUnits: 1,
 				}),
 			);
 			const client = createEvmqueryClient({ fetch: fetchMock });
@@ -113,7 +113,7 @@ describe("createEvmqueryClient", () => {
 			expect(data).toEqual({
 				valid: true,
 				type: "sol_int",
-				estimatedCredits: 1,
+				estimatedUnits: 1,
 			});
 		});
 	});
@@ -148,10 +148,8 @@ describe("createEvmqueryClient", () => {
 		it("performs a GET request and returns the usage snapshot", async () => {
 			fetchMock.mockResolvedValueOnce(
 				jsonResponse({
-					credits: { used: 100, allowance: 1000, remaining: 900 },
-					tier: "pro",
-					periodStart: "2026-04-01",
-					periodEnd: "2026-04-30",
+					minute: { used: 100, limit: 1000 },
+					hour: { used: 900, limit: 10000 },
 				}),
 			);
 			const client = createEvmqueryClient({ fetch: fetchMock });
@@ -161,8 +159,8 @@ describe("createEvmqueryClient", () => {
 			const request = captureRequest(fetchMock);
 			expect(request.method).toBe("GET");
 			expect(request.url).toBe("https://api.evmquery.com/api/v1/usage");
-			expect(data?.credits.remaining).toBe(900);
-			expect(data?.tier).toBe("pro");
+			expect(data?.minute.used).toBe(100);
+			expect(data?.hour.limit).toBe(10000);
 		});
 	});
 
@@ -182,7 +180,10 @@ describe("createEvmqueryClient", () => {
 
 		it("merges custom headers and apiKey into every request", async () => {
 			fetchMock.mockResolvedValueOnce(
-				jsonResponse({ creditsUsed: 0, creditsRemaining: 100 }),
+				jsonResponse({
+					minute: { used: 0, limit: 1000 },
+					hour: { used: 0, limit: 10000 },
+				}),
 			);
 			const client = createEvmqueryClient({
 				apiKey: "secret-token",

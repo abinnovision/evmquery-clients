@@ -52,6 +52,8 @@ export const createEvmqueryClient = (
 ): EvmqueryClient => {
 	const client = createClient({
 		baseUrl: options.baseUrl ?? DEFAULT_BASE_URL,
+		// Surface interceptor errors as promise rejections, not on `error`.
+		throwOnError: true,
 		...(options.fetch ? { fetch: options.fetch } : {}),
 		...(options.apiKey ? { auth: options.apiKey } : {}),
 		headers: { ...options.headers },
