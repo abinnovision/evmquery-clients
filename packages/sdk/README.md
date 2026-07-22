@@ -11,9 +11,9 @@ yarn add @evmquery-clients/sdk
 ## Usage
 
 ```ts
-import { createEvmQueryClient } from "@evmquery-clients/sdk";
+import { createEvmqueryClient } from "@evmquery-clients/sdk";
 
-const evmquery = createEvmQueryClient({
+const evmquery = createEvmqueryClient({
   apiKey: process.env.EVMQUERY_API_KEY,
 });
 
@@ -38,7 +38,7 @@ The client exposes a curated set of typed methods:
 | `describe()`   | `POST /query/describe` | Resolve a schema into contract methods and context. |
 | `usage()`      | `GET /usage`           | Credit usage and billing-period snapshot.           |
 
-Errors are thrown as `EvmQueryError` with `status`, `statusText`, and parsed `body`.
+Errors are thrown as `EvmqueryError` with `status`, `statusText`, and parsed `body`.
 
 ### Options
 
@@ -52,12 +52,12 @@ Errors are thrown as `EvmQueryError` with `status`, `statusText`, and parsed `bo
 ### Errors
 
 ```ts
-import { isEvmQueryError } from "@evmquery-clients/sdk";
+import { isEvmqueryError } from "@evmquery-clients/sdk";
 
 try {
   await evmquery.query({ body });
 } catch (error) {
-  if (isEvmQueryError(error)) {
+  if (isEvmqueryError(error)) {
     console.error(error.status, error.body);
   }
   throw error;

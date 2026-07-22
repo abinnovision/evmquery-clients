@@ -1,4 +1,4 @@
-import { EvmQueryError } from "./errors";
+import { EvmqueryError } from "./errors";
 import { type Client, createClient } from "./generated/client";
 import * as sdk from "./generated/sdk.gen";
 
@@ -16,7 +16,7 @@ type Aliases = typeof ALIASES;
 
 type SdkCallable = (options: Record<string, unknown>) => unknown;
 
-export interface EvmQueryClientOptions {
+export interface EvmqueryClientOptions {
 	/**
 	 * API key sent as the `X-API-Key` header on authenticated endpoints.
 	 */
@@ -38,18 +38,18 @@ export interface EvmQueryClientOptions {
 	headers?: Record<string, string>;
 }
 
-export type EvmQueryClient = { client: Client } & {
+export type EvmqueryClient = { client: Client } & {
 	[K in keyof Aliases]: Aliases[K];
 };
 
 /**
- * Creates a new EvmQueryClient instance with the given options.
+ * Creates a new EvmqueryClient instance with the given options.
  *
  * @param options Configuration options for the client, including API key, base URL, custom fetch, and additional headers.
  */
-export const createEvmQueryClient = (
-	options: EvmQueryClientOptions = {},
-): EvmQueryClient => {
+export const createEvmqueryClient = (
+	options: EvmqueryClientOptions = {},
+): EvmqueryClient => {
 	const client = createClient({
 		baseUrl: options.baseUrl ?? DEFAULT_BASE_URL,
 		...(options.fetch ? { fetch: options.fetch } : {}),
@@ -57,10 +57,10 @@ export const createEvmQueryClient = (
 		headers: { ...options.headers },
 	});
 
-	// Add a response interceptor to throw EvmQueryError on non-OK responses
+	// Add a response interceptor to throw EvmqueryError on non-OK responses
 	client.interceptors.response.use(async (response) => {
 		if (!response.ok) {
-			throw await EvmQueryError.fromResponse(response);
+			throw await EvmqueryError.fromResponse(response);
 		}
 
 		return response;
@@ -73,5 +73,5 @@ export const createEvmQueryClient = (
 			callable({ client, ...callOptions });
 	}
 
-	return bound as EvmQueryClient;
+	return bound as EvmqueryClient;
 };

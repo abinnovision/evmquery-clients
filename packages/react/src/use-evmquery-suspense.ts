@@ -5,14 +5,14 @@ import { useEvmqueryClient } from "./use-evmquery-client";
 
 import type { EvmquerySuspenseResource } from "./types";
 import type {
-	EvmQueryClient,
+	EvmqueryClient,
 	QueryExecuteRequestDto,
 	QueryExecuteResponseDto,
 } from "@evmquery/sdk";
 
 interface QueryMemo<T> {
 	key: string;
-	client: EvmQueryClient;
+	client: EvmqueryClient;
 	token: number;
 	controller: AbortController;
 	promise: Promise<T>;
