@@ -64,20 +64,20 @@
 		"n8n-workflow": "*"
 	},
 	"devDependencies": {
-		"@abinnovision/eslint-config-base": "^3.2.2",
-		"@abinnovision/prettier-config": "^2.1.5",
+		"@abinnovision/eslint-config-base": "^3.4.2",
+		"@abinnovision/prettier-config": "^2.2.0",
 		"@internal/tsconfig": "workspace:^",
-		"@n8n/eslint-plugin-community-nodes": "^0.12.0",
+		"@n8n/eslint-plugin-community-nodes": "^0.30.0",
 		"@types/gulp": "^4.0.18",
-		"eslint": "^9.39.4",
-		"eslint-plugin-n8n-nodes-base": "^1.16.6",
+		"eslint": "^10.9.1",
+		"eslint-plugin-n8n-nodes-base": "^2.0.0",
 		"gulp": "^5.0.1",
-		"n8n-workflow": "^2.18.3",
-		"prettier": "^3.8.3",
-		"tsx": "^4.20.7",
+		"n8n-workflow": "^2.37.1",
+		"prettier": "^3.9.6",
+		"tsx": "^4.23.13",
 		"typescript": "^6.0.3",
-		"vitest": "^4.1.5",
-		"zod": "4.3.6"
+		"vitest": "^4.1.11",
+		"zod": "4.5.4"
 	},
 	"publishConfig": {
 		"access": "public",
