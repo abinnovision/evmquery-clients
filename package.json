@@ -49,5 +49,5 @@
 		"turbo": "^2.9.14",
 		"vitest": "^4.1.11"
 	},
-	"packageManager": "yarn@4.13.0"
+	"packageManager": "yarn@4.18.0"
 }
